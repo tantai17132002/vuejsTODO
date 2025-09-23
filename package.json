@@ -16,11 +16,22 @@
     "@nuxt/scripts": "^0.11.13",
     "@nuxt/test-utils": "^3.19.2",
     "@nuxt/ui": "^3.3.3",
+    "@pinia/nuxt": "^0.11.2",
     "@unhead/vue": "^2.0.14",
+    "@vee-validate/i18n": "^4.15.1",
+    "@vee-validate/rules": "^4.15.1",
+    "axios": "^1.11.0",
     "eslint": "^9.35.0",
     "nuxt": "^4.1.1",
+    "pinia": "^3.0.3",
     "typescript": "^5.9.2",
+    "vee-validate": "^4.15.1",
     "vue": "^3.5.21",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vue-toastification": "^2.0.0-rc.5",
+    "yup": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2"
   }
 }
