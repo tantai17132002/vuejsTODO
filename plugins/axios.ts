@@ -23,7 +23,6 @@ export default defineNuxtPlugin(() => {
       }
     } catch (error) {
       // Bỏ qua lỗi nếu store chưa có sẵn (trong quá trình SSR)
-      console.warn("Auth store not available:", error);
     }
 
     return config;

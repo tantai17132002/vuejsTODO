@@ -1,0 +1,75 @@
+{
+  "navbar": {
+    "name": "ToDo Application",
+    "description": "Manage your tasks",
+    "login": "Login",
+    "register": "Register",
+    "language": {
+      "VNname": "Vietnamese",
+      "ENname": "English"
+    }
+  },
+  "home": {
+    "title": "Efficient Task Management",
+    "subtitle": "ToDo app helps you organize, track, and complete tasks easily",
+    "features": {
+      "title": "Key Features",
+      "feature1": {
+        "title": "Easy Management",
+        "description": "Create, edit, and delete tasks in a simple and intuitive way"
+      },
+      "feature2": {
+        "title": "Progress Tracking",
+        "description": "Track completion progress and task execution time"
+      },
+      "feature3": {
+        "title": "Boost Productivity",
+        "description": "Optimize workflow and increase personal efficiency"
+      }
+    }
+  },
+  "footer": {
+    "description": "Efficient task management application, helping you organize and track daily tasks easily.",
+    "follow": "Follow Us",
+    "contact": "Contact",
+    "copyright": "© 2025 ToDo Application. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "support": "Support"
+  },
+  "validation": {
+    "username": {
+      "required": "Please enter username or email"
+    },
+    "email": {
+      "required": "Please enter email",
+      "valid": "Please enter a valid email"
+    },
+    "password": {
+      "required": "Please enter password",
+      "minLength": "Password must be at least 8 characters"
+    }
+  },
+  "login": {
+    "subtitle": "Login to manage your tasks",
+    "usernameLabel": "Username or Email",
+    "usernamePlaceholder": "Enter username or email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter password",
+    "loginButton": "Login",
+    "loggingIn": "Logging in...",
+    "errorTitle": "Login Error",
+    "wrongPassword": "Incorrect password, please check your password again",
+    "wrongCredentials": "Incorrect username or email, please check your credentials again"
+  },
+  "register": {
+    "subtitle": "Create your account to get started",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "registerButton": "Register"
+  }
+}
