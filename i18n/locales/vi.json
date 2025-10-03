@@ -1,0 +1,83 @@
+{
+  "navbar": {
+    "name": "Ứng dụng ToDo",
+    "description": "Quản lý nhiệm vụ của bạn",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "dashboard": "Bảng điều khiển",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "language": {
+      "VNname": "Tiếng Việt",
+      "ENname": "Tiếng Anh"
+    }
+  },
+  "home": {
+    "title": "Quản lý công việc hiệu quả",
+    "subtitle": "Ứng dụng ToDo giúp bạn tổ chức, theo dõi và hoàn thành các nhiệm vụ một cách dễ dàng",
+    "features": {
+      "title": "Tính năng nổi bật",
+      "feature1": {
+        "title": "Quản lý dễ dàng",
+        "description": "Tạo, chỉnh sửa và xóa các nhiệm vụ một cách đơn giản và trực quan"
+      },
+      "feature2": {
+        "title": "Theo dõi tiến độ",
+        "description": "Theo dõi tiến độ hoàn thành và thời gian thực hiện các nhiệm vụ"
+      },
+      "feature3": {
+        "title": "Tăng năng suất",
+        "description": "Tối ưu hóa quy trình làm việc và tăng hiệu suất cá nhân"
+      }
+    }
+  },
+  "footer": {
+    "description": "Ứng dụng quản lý công việc hiệu quả, giúp bạn tổ chức và theo dõi các nhiệm vụ hàng ngày một cách dễ dàng.",
+    "follow": "Theo dõi chúng tôi",
+    "contact": "Liên hệ",
+    "copyright": "© 2025 ToDo Application. Tất cả quyền được bảo lưu.",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản sử dụng",
+    "support": "Hỗ trợ"
+  },
+  "validation": {
+    "username": {
+      "required": "Vui lòng nhập tên đăng nhập hoặc email"
+    },
+    "email": {
+      "required": "Vui lòng nhập email",
+      "valid": "Vui lòng nhập email hợp lệ"
+    },
+    "password": {
+      "required": "Vui lòng nhập mật khẩu",
+      "minLength": "Mật khẩu phải có ít nhất 8 ký tự"
+    }
+  },
+  "login": {
+    "subtitle": "Đăng nhập để quản lý công việc của bạn",
+    "usernameLabel": "Tên đăng nhập hoặc Email",
+    "usernamePlaceholder": "Nhập tên đăng nhập hoặc email",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "loginButton": "Đăng nhập",
+    "loggingIn": "Đang đăng nhập...",
+    "errorTitle": "Lỗi đăng nhập",
+    "wrongPassword": "Mật khẩu không đúng, vui lòng kiểm tra mật khẩu lại",
+    "wrongCredentials": "Tên đăng nhập hoặc email không đúng, vui lòng kiểm tra lại"
+  },
+  "register": {
+    "subtitle": "Tạo tài khoản để bắt đầu",
+    "usernameLabel": "Tên người dùng",
+    "usernamePlaceholder": "Nhập tên của bạn",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Nhập email của bạn",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu của bạn",
+    "registerButton": "Đăng ký",
+    "registering": "Đang tạo tài khoản...",
+    "errorTitle": "Lỗi đăng ký",
+    "wrongUsername": "Tên người dùng đã tồn tại, vui lòng chọn tên khác",
+    "wrongEmail": "Email đã được đăng ký, vui lòng sử dụng email khác"
+  }
+}
