@@ -21,7 +21,7 @@
       <!-- Form Container - sử dụng reusable component -->
       <FormsFormContainer>
         <!-- Form với validation -->
-        <form @submit.prevent="register" class="space-y-6">
+        <form @submit.prevent="register" class="space-y-6" novalidate>
           <!-- Input tên đăng nhập -->
           <FormsFormInput
             id="username"
@@ -46,7 +46,7 @@
             v-model="email"
             v-bind="emailAttrs"
             :label="$t('register.emailLabel')"
-            type="email"
+            type="text"
             :placeholder="$t('register.emailPlaceholder')"
             :error="errors.email"
           >
