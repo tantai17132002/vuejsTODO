@@ -52,6 +52,10 @@
     "password": {
       "required": "Vui lòng nhập mật khẩu",
       "minLength": "Mật khẩu phải có ít nhất 8 ký tự"
+    },
+    "title": {
+      "required": "Tiêu đề là bắt buộc",
+      "minLength": "Tiêu đề phải có ít nhất 3 ký tự"
     }
   },
   "login": {
@@ -79,5 +83,50 @@
     "errorTitle": "Lỗi đăng ký",
     "wrongUsername": "Tên người dùng đã tồn tại, vui lòng chọn tên khác",
     "wrongEmail": "Email đã được đăng ký, vui lòng sử dụng email khác"
+  },
+  "dashboard": {
+    "todoList": "Danh sách các công việc",
+    "addNew": "Thêm mới",
+    "loading": "Đang tải...",
+    "errorTitle": "Lỗi",
+    "dismiss": "Bỏ qua",
+    "noTodos": "Chưa có công việc nào",
+    "noTodosDescription": "Bắt đầu bằng cách tạo công việc đầu tiên",
+    "createFirst": "Tạo công việc đầu tiên",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "created": "Tạo lúc",
+    "updated": "Cập nhật lúc",
+    "completed": "Hoàn thành",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa công việc này?",
+    "createSuccess": "Đã tạo công việc thành công!",
+    "updateSuccess": "Đã cập nhật công việc thành công!",
+    "deleteSuccess": "Đã xóa công việc thành công!"
+  },
+  "todoForm": {
+    "title": "Tạo hoặc chỉnh sửa công việc",
+    "titleLabel": "Tiêu đề",
+    "titlePlaceholder": "Nhập tiêu đề công việc",
+    "descriptionLabel": "Mô tả",
+    "descriptionPlaceholder": "Nhập mô tả công việc (tùy chọn)",
+    "errorTitle": "Lỗi",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "saving": "Đang lưu..."
+  },
+  "pagination": {
+    "showing": "Hiển thị",
+    "to": "đến",
+    "of": "trong tổng số",
+    "results": "kết quả"
+  },
+  "deleteModal": {
+    "title": "Xóa công việc",
+    "confirmTitle": "Bạn có chắc chắn?",
+    "confirmMessage": "Hành động này không thể hoàn tác. Điều này sẽ xóa vĩnh viễn công việc này.",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "deleting": "Đang xóa...",
+    "errorTitle": "Lỗi"
   }
 }

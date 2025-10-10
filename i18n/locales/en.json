@@ -52,6 +52,10 @@
     "password": {
       "required": "Please enter password",
       "minLength": "Password must be at least 8 characters"
+    },
+    "title": {
+      "required": "Title is required",
+      "minLength": "Title must be at least 3 characters"
     }
   },
   "login": {
@@ -79,5 +83,50 @@
     "errorTitle": "Registration Error",
     "wrongUsername": "Username already exists, please choose a different username",
     "wrongEmail": "Email already registered, please use a different email"
+  },
+  "dashboard": {
+    "todoList": "List of jobs",
+    "addNew": "Add New",
+    "loading": "Loading...",
+    "errorTitle": "Error",
+    "dismiss": "Dismiss",
+    "noTodos": "No todos yet",
+    "noTodosDescription": "Get started by creating your first todo",
+    "createFirst": "Create First Todo",
+    "edit": "Edit",
+    "delete": "Delete",
+    "created": "Created",
+    "updated": "Updated",
+    "completed": "Completed",
+    "confirmDelete": "Are you sure you want to delete this todo?",
+    "createSuccess": "Todo created successfully!",
+    "updateSuccess": "Todo updated successfully!",
+    "deleteSuccess": "Todo deleted successfully!"
+  },
+  "todoForm": {
+    "title": "Create or edit your todo",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Enter todo title",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter todo description (optional)",
+    "errorTitle": "Error",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving..."
+  },
+  "pagination": {
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results"
+  },
+  "deleteModal": {
+    "title": "Delete Todo",
+    "confirmTitle": "Are you sure?",
+    "confirmMessage": "This action cannot be undone. This will permanently delete the todo item.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "errorTitle": "Error"
   }
 }
