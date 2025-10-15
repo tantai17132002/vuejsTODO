@@ -8,6 +8,10 @@
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",
+    "logoutConfirmTitle": "Confirm Logout",
+    "logoutConfirmMessage": "Are you sure you want to logout? You will need to login again to access your account.",
+    "logoutError": "An error occurred while logging out",
+    "cancel": "Cancel",
     "language": {
       "VNname": "Vietnamese",
       "ENname": "English"
@@ -92,7 +96,6 @@
     "dismiss": "Dismiss",
     "noTodos": "No todos yet",
     "noTodosDescription": "Get started by creating your first todo",
-    "createFirst": "Create First Todo",
     "edit": "Edit",
     "delete": "Delete",
     "created": "Created",
@@ -101,7 +104,17 @@
     "confirmDelete": "Are you sure you want to delete this todo?",
     "createSuccess": "Todo created successfully!",
     "updateSuccess": "Todo updated successfully!",
-    "deleteSuccess": "Todo deleted successfully!"
+    "deleteSuccess": "Todo deleted successfully!",
+    "fetchSuccess": "Todos loaded successfully!",
+    "completeSuccess": "Todo completed!",
+    "uncompleteSuccess": "Todo marked as incomplete!",
+    "filterBy": "Filter by",
+    "filterAll": "All Tasks",
+    "filterPending": "Pending",
+    "filterCompleted": "Completed",
+    "filterAllDescription": "All tasks",
+    "filterPendingDescription": "Incomplete tasks",
+    "filterCompletedDescription": "Completed tasks"
   },
   "todoForm": {
     "title": "Create or edit your todo",
@@ -112,7 +125,9 @@
     "errorTitle": "Error",
     "cancel": "Cancel",
     "save": "Save",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "createError": "An error occurred while creating todo",
+    "updateError": "An error occurred while updating todo"
   },
   "pagination": {
     "showing": "Showing",
@@ -128,5 +143,17 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "errorTitle": "Error"
+  },
+  "auth": {
+    "loginSuccess": "Login successful!",
+    "registerSuccess": "Registration successful!",
+    "logoutSuccess": "Logout successful!"
+  },
+  "user": {
+    "profileUpdateSuccess": "Profile updated successfully!"
+  },
+  "common": {
+    "success": "Operation successful!",
+    "error": "An error occurred!"
   }
 }

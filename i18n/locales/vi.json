@@ -8,6 +8,10 @@
     "profile": "Hồ sơ",
     "settings": "Cài đặt",
     "logout": "Đăng xuất",
+    "logoutConfirmTitle": "Xác nhận đăng xuất",
+    "logoutConfirmMessage": "Bạn có chắc chắn muốn đăng xuất? Bạn sẽ cần đăng nhập lại để truy cập tài khoản.",
+    "logoutError": "Có lỗi xảy ra khi đăng xuất",
+    "cancel": "Hủy",
     "language": {
       "VNname": "Tiếng Việt",
       "ENname": "Tiếng Anh"
@@ -92,7 +96,6 @@
     "dismiss": "Bỏ qua",
     "noTodos": "Chưa có công việc nào",
     "noTodosDescription": "Bắt đầu bằng cách tạo công việc đầu tiên",
-    "createFirst": "Tạo công việc đầu tiên",
     "edit": "Sửa",
     "delete": "Xóa",
     "created": "Tạo lúc",
@@ -101,7 +104,17 @@
     "confirmDelete": "Bạn có chắc chắn muốn xóa công việc này?",
     "createSuccess": "Đã tạo công việc thành công!",
     "updateSuccess": "Đã cập nhật công việc thành công!",
-    "deleteSuccess": "Đã xóa công việc thành công!"
+    "deleteSuccess": "Đã xóa công việc thành công!",
+    "fetchSuccess": "Đã tải danh sách công việc thành công!",
+    "completeSuccess": "Công việc đã hoàn thành!",
+    "uncompleteSuccess": "Công việc chưa hoàn thành!",
+    "filterBy": "Lọc theo",
+    "filterAll": "Tất cả",
+    "filterPending": "Chưa hoàn thành",
+    "filterCompleted": "Đã hoàn thành",
+    "filterAllDescription": "Tất cả công việc",
+    "filterPendingDescription": "Công việc chưa hoàn thành",
+    "filterCompletedDescription": "Công việc đã hoàn thành"
   },
   "todoForm": {
     "title": "Tạo hoặc chỉnh sửa công việc",
@@ -112,7 +125,9 @@
     "errorTitle": "Lỗi",
     "cancel": "Hủy",
     "save": "Lưu",
-    "saving": "Đang lưu..."
+    "saving": "Đang lưu...",
+    "createError": "Có lỗi xảy ra khi tạo công việc",
+    "updateError": "Có lỗi xảy ra khi cập nhật công việc"
   },
   "pagination": {
     "showing": "Hiển thị",
@@ -128,5 +143,17 @@
     "delete": "Xóa",
     "deleting": "Đang xóa...",
     "errorTitle": "Lỗi"
+  },
+  "auth": {
+    "loginSuccess": "Đăng nhập thành công!",
+    "registerSuccess": "Đăng ký thành công!",
+    "logoutSuccess": "Đăng xuất thành công!"
+  },
+  "user": {
+    "profileUpdateSuccess": "Cập nhật thông tin thành công!"
+  },
+  "common": {
+    "success": "Thao tác thành công!",
+    "error": "Có lỗi xảy ra!"
   }
 }

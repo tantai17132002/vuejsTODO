@@ -17,9 +17,10 @@ const emit = defineEmits<{
   success: []
 }>();
 
-// Lấy stores và i18n
+// Lấy stores, i18n và API
 const todoStore = useTodoStore();
 const { t } = useI18n();
+const { todoApi } = useApi();
 
 // Reactive state
 const loading = ref(false);
@@ -31,18 +32,20 @@ const handleCreate = async (data: { title: string; description?: string; isDone?
     loading.value = true;
     error.value = '';
     
-    // Gọi API tạo todo mới
-    await todoStore.addTodo({
+    // Sử dụng todoApi với toast tự động
+    const newTodo = await todoApi.createTodo({
       title: data.title,
       description: data.description
     });
+    
+    // Cập nhật store với response từ API
+    todoStore.todos.unshift(newTodo.data || newTodo);
     
     // Emit success event để đóng modal
     emit('success');
   } catch (err: any) {
     // Xử lý lỗi
-    error.value = err.response?.data?.message || 'Có lỗi xảy ra khi tạo todo';
-    console.error('Error creating todo:', err);
+    error.value = err.response?.data?.message || t('todoForm.createError');
   } finally {
     loading.value = false;
   }

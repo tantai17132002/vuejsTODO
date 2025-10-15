@@ -303,13 +303,11 @@ const handleCancel = () => {
 watch(
   () => props.initialData,
   (newData) => {
-    console.log('TodoForm initialData changed:', newData);
     if (newData) {
       formData.title = newData.title;
       formData.description = newData.description || "";
       formData.isDone = newData.isDone || false;
       title.value = newData.title;
-      console.log('Form data updated:', formData);
     }
   },
   { deep: true, immediate: true }

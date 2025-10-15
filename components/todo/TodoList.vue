@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+  <div class="bg-white rounded-xl shadow-lg border border-gray-100">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4">
+    <div class="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4 relative overflow-visible">
       <div class="flex justify-between items-center">
         <div class="flex items-center space-x-3">
           <div class="bg-white/20 p-2 rounded-lg">
@@ -13,17 +13,23 @@
             <h2 class="text-xl font-bold text-white">{{ $t('dashboard.todoList') }}</h2>
           </div>
         </div>
-        <BaseButton 
-          @click="$emit('openCreateModal')"
-          variant="ghost" 
-          size="md"
-          class="bg-white/20 hover:bg-white/30 text-white border-white/30 hover:border-white/50 flex items-center gap-2 transition-all duration-200"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          {{ $t('dashboard.addNew') }}
-        </BaseButton>
+        <div class="flex items-center space-x-3">
+          <!-- Header Actions Slot -->
+          <slot name="header-actions"></slot>
+          
+          <!-- Add New Button -->
+          <BaseButton 
+            @click="$emit('openCreateModal')"
+            variant="ghost" 
+            size="md"
+            class="bg-white/20 hover:bg-white/30 text-white border-white/30 hover:border-white/50 flex items-center gap-2 transition-all duration-200 rounded-md"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            {{ $t('dashboard.addNew') }}
+          </BaseButton>
+        </div>
       </div>
     </div>
 
@@ -37,12 +43,13 @@
     <TodoEmpty v-else-if="todos.length === 0" />
 
     <!-- Todo List -->
-    <div v-else class="divide-y divide-gray-100">
+    <div v-else class="overflow-hidden">
       <TodoCard
-        v-for="todo in todos"
+        v-for="(todo, index) in todos"
         :key="todo.id"
         :todo="todo"
-        @toggle="$emit('toggle', $event)"
+        :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+        @toggle="(id, isDone) => $emit('toggle', id, isDone)"
         @delete="$emit('delete', $event)"
         @edit="$emit('edit', $event)"
       />
@@ -85,11 +92,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Emits
 const emit = defineEmits<{
-  toggle: [id: number]
+  toggle: [id: number, isDone: boolean]
   delete: [id: number]
   edit: [todo: Todo]
   clearError: []
   openCreateModal: []
   'page-change': [page: number]
 }>()
+
 </script>

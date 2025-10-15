@@ -30,6 +30,7 @@
         :type="type"
         :placeholder="placeholder"
         :class="inputClasses"
+        tabindex="-1"
         @input="$emit('update:modelValue', $event.target.value)"
       />
     </div>
@@ -54,6 +55,7 @@ interface Props {
 
 // Khai báo props với giá trị mặc định
 const props = withDefaults(defineProps<Props>(), {
+  modelValue: '',       // Mặc định empty string
   type: 'text',         // Mặc định là text input
   placeholder: '',      // Mặc định không có placeholder
   error: ''            // Mặc định không có lỗi
@@ -67,7 +69,7 @@ const emit = defineEmits<{
 // Computed classes cho input styling
 const inputClasses = computed(() => [
   // Base classes - styling cơ bản
-  'block w-full pl-12 pr-4 py-4 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-base',
+  'block w-full pl-12 pr-4 py-4 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-transparent transition-all duration-200 text-base',
   // Conditional classes - styling theo trạng thái
   props.error ? 'border-red-300 bg-red-50' : 'border-gray-300'  // Đỏ nếu có lỗi, xám nếu bình thường
 ]);
