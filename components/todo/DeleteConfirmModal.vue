@@ -129,6 +129,7 @@
             type="button"
             variant="ghost"
             size="md"
+            :ignore-modal-state="true"
             @click="handleCancel"
             class="px-6 py-3 text-gray-600 hover:text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-lg font-medium transition-all duration-200"
           >
@@ -151,6 +152,7 @@
             type="button"
             :disabled="loading"
             size="md"
+            :ignore-modal-state="true"
             @click="handleDelete"
             class="px-6 py-3 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >

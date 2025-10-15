@@ -2,6 +2,8 @@
   <!-- Navbar chính - fixed top, gradient background, full width, chiều cao 16 (64px) -->
   <nav
     class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 via-black to-gray-900 w-full h-16 flex items-center justify-between px-6 shadow-2xl backdrop-blur-sm border-b border-gray-800"
+    role="navigation"
+    aria-label="Main navigation"
   >
     <!-- Logo và tên ứng dụng bên trái -->
     <div
@@ -51,14 +53,21 @@
           width="fit"
           class="text-white hover:text-white border border-gray-600 hover:border-purple-500 hover:bg-purple-600/20 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 px-4"
         >
-          {{ $t("navbar.dashboard") }}
+          {{ $t("navbar.dashboard.todo") }}
         </BaseButton>
 
         <!-- Avatar Dropdown -->
         <UiDropdown position="right" width="min" variant="avatar">
           <!-- Trigger - Avatar -->
           <template #trigger="{ isOpen }">
-            <div class="relative">
+            <div 
+              class="relative focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 rounded-full"
+              tabindex="0"
+              role="button"
+              :aria-label="`User menu for ${auth.user?.username || 'user'}`"
+              @keydown.enter="() => {}"
+              @keydown.space.prevent="() => {}"
+            >
               <!-- Avatar container - kích thước bằng border Dashboard button -->
               <div
                 class="relative w-10 h-10 rounded-full overflow-hidden cursor-pointer hover:scale-110 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25"

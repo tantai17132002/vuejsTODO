@@ -4,7 +4,10 @@
     "description": "Quản lý nhiệm vụ của bạn",
     "login": "Đăng nhập",
     "register": "Đăng ký",
-    "dashboard": "Bảng điều khiển",
+    "dashboard": {
+      "todo": "Quản lý công việc",
+      "user": "Quản lý người dùng"
+    },
     "profile": "Hồ sơ",
     "settings": "Cài đặt",
     "logout": "Đăng xuất",

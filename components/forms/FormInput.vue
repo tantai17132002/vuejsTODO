@@ -30,7 +30,6 @@
         :type="type"
         :placeholder="placeholder"
         :class="inputClasses"
-        tabindex="-1"
         @input="$emit('update:modelValue', $event.target.value)"
       />
     </div>
@@ -69,8 +68,8 @@ const emit = defineEmits<{
 // Computed classes cho input styling
 const inputClasses = computed(() => [
   // Base classes - styling cơ bản
-  'block w-full pl-12 pr-4 py-4 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-0 focus:border-transparent transition-all duration-200 text-base',
+  'block w-full pl-12 pr-4 py-4 border rounded-lg shadow-sm placeholder-gray-400 transition-all duration-200 text-base',
   // Conditional classes - styling theo trạng thái
-  props.error ? 'border-red-300 bg-red-50' : 'border-gray-300'  // Đỏ nếu có lỗi, xám nếu bình thường
+  props.error ? 'border-red-300 bg-red-50' : 'border-gray-200'  // Đỏ nếu có lỗi, xám nhạt nếu bình thường
 ]);
 </script>

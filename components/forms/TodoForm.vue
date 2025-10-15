@@ -157,6 +157,7 @@
               type="button"
               variant="ghost"
               size="md"
+              :ignore-modal-state="true"
               @click="handleCancel"
               class="px-6 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 border border-gray-200 hover:border-red-300 rounded-lg font-medium transition-all duration-200 hover:shadow-md"
             >
@@ -179,6 +180,7 @@
               type="submit"
               :disabled="loading"
               size="md"
+              :ignore-modal-state="true"
               class="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               <span class="flex items-center">
