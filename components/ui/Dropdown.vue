@@ -1,11 +1,11 @@
 <template>
   <!-- Dropdown Container -->
-  <div class="relative" ref="dropdownRef">
+  <div :class="['relative', isModalOpen ? 'z-40' : 'z-[99998]', dropdownBlur, dropdownCursor]" ref="dropdownRef">
     <!-- Trigger Button -->
     <button
       @click="toggleDropdown"
       :class="triggerClasses"
-      :disabled="disabled"
+      :disabled="disabled || isModalOpen"
     >
       <!-- Slot cho trigger content -->
       <slot name="trigger" :isOpen="isOpen" />
@@ -21,9 +21,13 @@
       leave-to-class="opacity-0 scale-95"
     >
       <div
-        v-if="isOpen"
-        :class="menuClasses"
-        class="absolute z-50 mt-2 w-full min-w-max bg-white rounded-lg shadow-xl border border-gray-200 py-2 px-2 backdrop-blur-sm overflow-hidden"
+        v-if="isOpen && !isModalOpen"
+        :class="[
+          menuClasses,
+          'absolute mt-2 w-full min-w-max bg-white rounded-lg shadow-xl border border-gray-200 py-2 px-2 backdrop-blur-sm overflow-hidden',
+          dropdownZIndex,
+          dropdownBlur
+        ]"
       >
         <!-- Dropdown Items -->
         <slot name="items" :close="closeDropdown" />
@@ -57,6 +61,14 @@ const props = withDefaults(defineProps<Props>(), {
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
 
+// Modal state
+const { isModalOpen } = useModalState();
+
+// Debug: log modal state changes
+watch(isModalOpen, (newValue) => {
+  console.log('Modal state changed:', newValue);
+}, { immediate: true });
+
 // Computed classes
 const triggerClasses = computed(() => {
   const baseClasses = props.variant === 'avatar' 
@@ -89,9 +101,24 @@ const menuClasses = computed(() => {
   ];
 });
 
+// Computed z-index based on modal state
+const dropdownZIndex = computed(() => {
+  return isModalOpen.value ? 'z-40' : 'z-[99999]';
+});
+
+// Computed blur effect based on modal state
+const dropdownBlur = computed(() => {
+  return isModalOpen.value ? 'blur-sm opacity-50 pointer-events-none' : '';
+});
+
+// Computed cursor style based on modal state
+const dropdownCursor = computed(() => {
+  return isModalOpen.value ? 'cursor-not-allowed' : 'cursor-pointer';
+});
+
 // Methods
 const toggleDropdown = () => {
-  if (!props.disabled) {
+  if (!props.disabled && !isModalOpen.value) {
     isOpen.value = !isOpen.value;
   }
 };
@@ -100,13 +127,21 @@ const closeDropdown = () => {
   isOpen.value = false;
 };
 
+// Close dropdown when modal opens
+watch(isModalOpen, (newValue) => {
+  if (newValue && isOpen.value) {
+    isOpen.value = false;
+  }
+});
+
 // Click outside to close
 let handleClickOutside: ((event: MouseEvent) => void) | null = null;
 
 onMounted(() => {
   handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    if (!target.closest('.relative')) {
+    // Kiểm tra nếu click không phải trong dropdown container và modal không mở
+    if (!dropdownRef.value?.contains(target) && !isModalOpen.value) {
       isOpen.value = false;
     }
   };

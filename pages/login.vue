@@ -179,9 +179,11 @@ import { useForm } from "vee-validate";
 import * as yup from "yup";
 
 // Lấy Axios instance từ Nuxt app để gọi API
-const { $axios } = useNuxtApp();
+const { $axios, $toast } = useNuxtApp();
 // Lấy auth store để quản lý trạng thái đăng nhập
 const auth = useAuthStore();
+// Lấy i18n để sử dụng translation
+const { t } = useI18n();
 
 // Validation schema - định nghĩa rules cho form với computed để reactive với locale
 const schema = computed(() => yup.object({
@@ -200,6 +202,10 @@ const { errors, handleSubmit, defineField } = useForm({
 // Định nghĩa các field với validation attributes
 const [usernameOrEmail, usernameOrEmailAttrs] = defineField("usernameOrEmail");
 const [password, passwordAttrs] = defineField("password");
+
+// Đảm bảo các field có giá trị mặc định
+usernameOrEmail.value = usernameOrEmail.value || '';
+password.value = password.value || '';
 
 // Reactive state cho UI
 const error = ref(""); // Error message từ API
@@ -220,6 +226,9 @@ const login = handleSubmit(async (values) => {
 
     // Lấy thông tin user sau khi đăng nhập thành công
     await auth.fetchMe();
+
+    // Hiển thị toast thành công
+    $toast.success(t('auth.loginSuccess'));
 
     // Chuyển hướng đến trang dashboard
     await navigateTo("/dashboard");

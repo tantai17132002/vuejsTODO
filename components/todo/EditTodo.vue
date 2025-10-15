@@ -26,15 +26,12 @@ const emit = defineEmits<{
   success: []
 }>();
 
-// Lấy stores và i18n
+// Lấy stores, i18n và API
 const todoStore = useTodoStore();
 const { t } = useI18n();
+const { todoApi } = useApi();
 const router = useRouter();
 
-// Định nghĩa middleware để bảo vệ route
-definePageMeta({
-  middleware: 'auth'
-});
 
 // Reactive state
 const loading = ref(false);
@@ -46,19 +43,24 @@ const handleUpdate = async (data: { title: string; description?: string; isDone?
     loading.value = true;
     error.value = '';
     
-    // Gọi API cập nhật todo
-    await todoStore.updateTodo(props.todo.id, {
+    // Sử dụng todoApi với toast tự động
+    const updatedTodo = await todoApi.updateTodo(props.todo.id, {
       title: data.title,
       description: data.description,
       isDone: data.isDone
     });
     
+    // Cập nhật store với response từ API
+    const index = todoStore.todos.findIndex(todo => todo.id === props.todo.id);
+    if (index !== -1) {
+      todoStore.todos[index] = updatedTodo.data || updatedTodo;
+    }
+    
     // Emit success event để đóng modal
     emit('success');
   } catch (err: any) {
     // Xử lý lỗi
-    error.value = err.response?.data?.message || 'Có lỗi xảy ra khi cập nhật todo';
-    console.error('Error updating todo:', err);
+    error.value = err.response?.data?.message || t('todoForm.updateError');
   } finally {
     loading.value = false;
   }

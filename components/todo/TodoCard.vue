@@ -1,6 +1,9 @@
 <template>
   <div 
-    class="p-6 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-300 group"
+    :class="[
+      'p-6 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-300 group',
+      $attrs.class
+    ]"
   >
     <div class="flex items-start justify-between">
       <!-- Todo Content -->
@@ -101,6 +104,10 @@
 <script setup lang="ts">
 import type { Todo } from '~/stores/todo'
 
+defineOptions({
+  inheritAttrs: false
+})
+
 // Props
 interface Props {
   todo: Todo
@@ -110,14 +117,15 @@ const props = defineProps<Props>()
 
 // Emits
 const emit = defineEmits<{
-  toggle: [id: number]
+  toggle: [id: number, isDone: boolean]
   delete: [todo: Todo]
   edit: [todo: Todo]
 }>()
 
 // Methods
 const handleToggle = () => {
-  emit('toggle', props.todo.id)
+  // Emit với id và trạng thái mới (đảo ngược trạng thái hiện tại)
+  emit('toggle', props.todo.id, !props.todo.isDone)
 }
 
 const handleDelete = () => {

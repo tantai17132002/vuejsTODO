@@ -50,33 +50,17 @@ export const useTodoStore = defineStore('todo', {
         // Backend trả về { todos: [], pagination: {}, filters: {} }
         this.todos = res.data.todos || []
         
-        // Debug: Log API response
-        console.log('API Response:', res.data)
-        console.log('Todos length:', this.todos.length)
-        console.log('Request params:', { page, limit: this.itemsPerPage })
-        
         // Cập nhật pagination info từ API response
         if (res.data.pagination) {
           // Map API response structure to our store
           this.currentPage = res.data.pagination.page || page
           this.totalPages = res.data.pagination.totalPages || 1
           this.totalItems = res.data.pagination.total || 0
-          console.log('Using API pagination:', {
-            currentPage: this.currentPage,
-            totalPages: this.totalPages,
-            totalItems: this.totalItems,
-            apiPagination: res.data.pagination
-          })
         } else {
           // Fallback nếu API không trả về pagination info
           this.currentPage = page
           this.totalItems = this.todos.length
           this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage) || 1
-          console.log('Using fallback pagination:', {
-            currentPage: this.currentPage,
-            totalPages: this.totalPages,
-            totalItems: this.totalItems
-          })
         }
       } catch (err: any) {
         // Lưu thông báo lỗi

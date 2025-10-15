@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* Remove focus from non-button elements */
+input:focus,
+select:focus,
+textarea:focus,
+a:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Keep button focus but remove outline */
+button:focus,
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
