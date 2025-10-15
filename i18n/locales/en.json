@@ -4,7 +4,10 @@
     "description": "Manage your tasks",
     "login": "Login",
     "register": "Register",
-    "dashboard": "Dashboard",
+    "dashboard": {
+      "todo": "Todo Management",
+      "user": "User Management"
+    },
     "profile": "Profile",
     "settings": "Settings",
     "logout": "Logout",

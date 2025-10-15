@@ -42,17 +42,17 @@ const handleBackdropClick = () => {
 };
 
 // Close on escape key
+const handleEscape = (e: KeyboardEvent) => {
+  if (e.key === "Escape" && props.isOpen) {
+    emit("close");
+  }
+};
+
 onMounted(() => {
-  const handleEscape = (e: KeyboardEvent) => {
-    if (e.key === "Escape" && props.isOpen) {
-      emit("close");
-    }
-  };
-
   document.addEventListener("keydown", handleEscape);
+});
 
-  onUnmounted(() => {
-    document.removeEventListener("keydown", handleEscape);
-  });
+onUnmounted(() => {
+  document.removeEventListener("keydown", handleEscape);
 });
 </script>

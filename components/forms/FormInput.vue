@@ -70,6 +70,6 @@ const inputClasses = computed(() => [
   // Base classes - styling cơ bản
   'block w-full pl-12 pr-4 py-4 border rounded-lg shadow-sm placeholder-gray-400 transition-all duration-200 text-base',
   // Conditional classes - styling theo trạng thái
-  props.error ? 'border-red-300 bg-red-50' : 'border-transparent'  // Đỏ nếu có lỗi, trong suốt nếu bình thường
+  props.error ? 'border-red-300 bg-red-50' : 'border-gray-200'  // Đỏ nếu có lỗi, xám nhạt nếu bình thường
 ]);
 </script>

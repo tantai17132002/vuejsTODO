@@ -10,6 +10,14 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3001',
     },
   },
+  app: {
+    head: {
+      title: 'ToDo Application',
+      meta: [
+        { name: 'description', content: 'ToDo Application helps you organize, track, and complete tasks easily' }
+      ]
+    }
+  },
   // Cấu hình pages directory
   pages: true,
   // Đảm bảo Nuxt nhận ra thư mục pages

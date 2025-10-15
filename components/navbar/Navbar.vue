@@ -53,7 +53,7 @@
           width="fit"
           class="text-white hover:text-white border border-gray-600 hover:border-purple-500 hover:bg-purple-600/20 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25 px-4"
         >
-          {{ $t("navbar.dashboard") }}
+          {{ $t("navbar.dashboard.todo") }}
         </BaseButton>
 
         <!-- Avatar Dropdown -->

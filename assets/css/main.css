@@ -16,36 +16,52 @@ textarea:focus {
   transition: all 0.2s ease-in-out !important;
 }
 
-/* Keep button focus but remove outline */
-button:focus,
+/* Keep button focus but remove outline - only show on keyboard navigation */
+button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 button:focus-visible {
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.5) !important;
   background-color: rgba(139, 92, 246, 0.1) !important;
 }
 
-/* Allow focus styles for navbar interactive elements */
+/* Allow focus styles for navbar interactive elements - only keyboard navigation */
 nav [role="button"]:focus,
+nav [tabindex="0"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 nav [role="button"]:focus-visible,
-nav [tabindex="0"]:focus,
 nav [tabindex="0"]:focus-visible {
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.5) !important;
 }
 
-/* Allow focus styles for footer links */
+/* Allow focus styles for footer links - only keyboard navigation */
 footer a:focus,
+footer [tabindex="0"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 footer a:focus-visible,
-footer [tabindex="0"]:focus,
 footer [tabindex="0"]:focus-visible {
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.5) !important;
 }
 
-/* Allow focus styles for form buttons */
+/* Allow focus styles for form buttons - only keyboard navigation */
 form button:focus,
+form [tabindex="0"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 form button:focus-visible,
-form [tabindex="0"]:focus,
 form [tabindex="0"]:focus-visible {
   outline: none !important;
   box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.5) !important;
