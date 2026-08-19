@@ -1,0 +1,18 @@
+---
+description: Bắt buộc kiểm chứng store, middleware, form, E2E, lint và build
+globs: "{stores,composables,middleware,plugins,pages,components,test,tests}/**/*.{ts,vue}"
+alwaysApply: false
+---
+
+# Kiểm thử và hoàn thành frontend
+
+- Mỗi thay đổi auth, API, query, route hoặc validation phải có test tương ứng.
+- Unit test auth store: token, restore session, fetchMe lỗi, logout/reset.
+- Unit test todo store: giữ query khi đổi trang, CRUD, lỗi, không double fetch.
+- Unit test user store: list, detail, update role, `409`.
+- Test API layer: đúng endpoint/body, unwrap response, interceptor `401`/`403`.
+- Test middleware `auth`, `guest`, `admin` có await restore.
+- Component test: login/register validation, form todo, filter, pagination, confirm modal, Navbar theo role.
+- E2E: register → login → me → dashboard; restore sau reload; CRUD todo; filter + pagination; user không vào admin; admin đổi role.
+- Không tắt lint, typecheck, test hoặc interceptor chỉ để pass.
+- Trước khi hoàn thành: chạy test hẹp liên quan, rồi `npm run build`; báo cáo kiểm chứng chưa chạy và lý do.

@@ -1,18 +1,23 @@
+/**
+ * Bảo vệ route cần đăng nhập.
+ * Await restore session; thiếu token hoặc /auth/me thất bại thì về /login.
+ */
+export default defineNuxtRouteMiddleware(async (to) => {
+  const auth = useAuthStore()
 
-export default defineNuxtRouteMiddleware((to, from) => {
-  // Lấy auth store để kiểm tra trạng thái đăng nhập
-  const auth = useAuthStore();
-  
-  // Load token từ cookie trước khi kiểm tra
-  auth.loadTokenFromCookie();
-  
-  // Nếu chưa đăng nhập, redirect đến trang login
-  if (!auth.isLoggedIn) {
-    return navigateTo('/login');
+  try {
+    await auth.restoreSession()
+  } catch {
+    return navigateTo({
+      path: '/login',
+      query: { redirect: to.fullPath },
+    })
   }
-  
-  // Nếu đã đăng nhập nhưng chưa có thông tin user, load user info
-  if (auth.isLoggedIn && !auth.user) {
-    auth.fetchMe();
+
+  if (!auth.token || !auth.user) {
+    return navigateTo({
+      path: '/login',
+      query: { redirect: to.fullPath },
+    })
   }
-});
+})

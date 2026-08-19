@@ -1,0 +1,28 @@
+---
+description: Bắt buộc tài liệu và comment tiếng Việt dễ hiểu cho code frontend
+globs: "{pages,components,layouts,composables,stores,plugins,middleware,types}/**/*.{ts,vue}"
+alwaysApply: false
+---
+
+# Comment và tài liệu code bằng tiếng Việt
+
+- Store action, composable, middleware, plugin và hàm logic phải có JSDoc/comment tiếng Việt ngắn gọn.
+- Ghi rõ mục đích, input, output và side effect: điều hướng, cookie, reset store, gọi API.
+- Comment trước logic khó: restore session, interceptor 401, giữ query phân trang, optimistic update, hydration/SSR.
+- Giải thích **vì sao**, không diễn giải cú pháp hiển nhiên hay binding template đơn giản.
+- Tên biến, hàm, component, field API và thuật ngữ kỹ thuật vẫn dùng tiếng Anh.
+- Sửa code thì cập nhật hoặc xóa comment không còn đúng.
+- Không ghi password, token, secret hoặc dữ liệu nhạy cảm vào comment hay ví dụ.
+
+```ts
+/**
+ * Khôi phục phiên từ cookie rồi lấy user hiện tại.
+ * Phải await trước khi middleware quyết định điều hướng.
+ */
+async restoreSession() {
+  this.loadTokenFromCookie()
+  if (this.token && !this.user) {
+    await this.fetchMe()
+  }
+}
+```

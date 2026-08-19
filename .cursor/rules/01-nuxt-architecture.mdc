@@ -1,0 +1,27 @@
+---
+description: Bắt buộc ranh giới page, component, store, composable và type Nuxt
+globs: "{pages,components,layouts,composables,stores,plugins,middleware,types}/**/*.{ts,vue}"
+alwaysApply: false
+---
+
+# Kiến trúc Nuxt
+
+- `pages` chỉ ghép UI và gọi store/composable; không map HTTP lặp lại trong page.
+- `components` nhận data/emit event qua contract rõ; không tự gọi API nếu store đã có action tương ứng.
+- `stores` giữ state và luồng nghiệp vụ phía client.
+- `composables/useApi` là nguồn ánh xạ endpoint duy nhất.
+- `plugins/axios` chỉ cấu hình base URL, Bearer token và interceptor.
+- `middleware` chỉ quyết định điều hướng theo auth/role.
+- Type API nằm trong `types/`; không dùng `any` cho `User`, `CurrentUser`, `Todo`, `Pagination` hoặc `ApiError`.
+- Không phụ thuộc file generated `.nuxt`.
+- Không thêm dependency, page, store hoặc endpoint không dùng.
+- Chỉ đưa config công khai vào `runtimeConfig.public`; không lưu JWT secret hay credential backend ở frontend.
+
+```ts
+// ❌ BAD: page gọi $axios trực tiếp trong khi store đã có fetchTodos
+const { $axios } = useNuxtApp()
+await $axios.get('/todos')
+
+// ✅ GOOD: page ủy thác cho store
+await todoStore.fetchTodos()
+```

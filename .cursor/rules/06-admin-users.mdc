@@ -1,0 +1,17 @@
+---
+description: Bắt buộc trang admin, profile và cập nhật role đúng hợp đồng
+globs: "{pages/users/**/*.vue,pages/profile.vue,stores/user.ts,stores/auth.ts,composables/useApi.ts}"
+alwaysApply: false
+---
+
+# Profile và quản trị user
+
+- `/profile` dùng `GET /auth/me` để hiện username và role; không hiện form cập nhật profile vì API chưa có.
+- Cần profile đầy đủ thì gọi `GET /users/:id` của chính mình và dùng shape `User`.
+- `/users` chỉ admin; list dùng `page` và `limit`; không gửi search/role filter nếu hợp đồng chưa có.
+- `/users/:id` tải `GET /users/:id` và chỉ hiện field user công khai.
+- Đổi role gửi `PATCH /users/:id/role` với `{ role: "user" | "admin" }`.
+- Cần confirmation khi hạ quyền; xử lý `409` khi hạ cấp admin cuối cùng.
+- Không khẳng định thành công trước response backend.
+- Sau khi đổi role, cập nhật list/detail nhất quán; nếu admin đổi role của chính mình thì refresh `/auth/me` hoặc xử lý `403`.
+- Logout hoặc đổi user phải `reset()` store admin để không lộ dữ liệu phiên trước.

@@ -1,0 +1,20 @@
+---
+description: Bắt buộc luồng login, register, cookie, restore session và xử lý 401
+globs: "{stores/auth.ts,plugins/axios.ts,middleware/*.ts,pages/login.vue,pages/register.vue,components/navbar/**/*.vue}"
+alwaysApply: false
+---
+
+# Xác thực và phiên đăng nhập
+
+- Login: validate → `POST /auth/login` → lưu `access_token` → `await GET /auth/me` → điều hướng.
+- Register: validate → `POST /auth/register` → thông báo thành công → `/login`; không `setToken`.
+- Password login/register tối thiểu 8 ký tự để khớp backend.
+- Restore session ở cấp app/plugin hoặc auth store init, không chỉ trong middleware dashboard.
+- Có token nhưng chưa có user thì `await fetchMe()`; UI dùng trạng thái `initializing`, không nhấp nháy menu.
+- Navbar/public route phải nhận đúng trạng thái sau reload.
+- Cookie token: `sameSite: "lax"`, `path: "/"`, `secure: true` trên HTTPS; không lưu token vào localStorage, URL hoặc log.
+- Logout xóa cookie, reset auth/todo/admin state, đóng modal nhạy cảm, điều hướng `/login`.
+- Axios `401`: clear auth, reset store phụ thuộc user, chuyển `/login`; tránh vòng lặp khi chính request login trả 401.
+- Axios `403`: giữ phiên, hiện không đủ quyền; rời admin route nếu cần.
+- `isLoggedIn` chỉ nghĩa là có token; quyết định route phải chờ restore/validation.
+- Navbar chỉ dùng field `CurrentUser`: `id`, `username`, `role`; không hiện email/avatar từ `/auth/me`.

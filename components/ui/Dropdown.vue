@@ -64,11 +64,6 @@ const dropdownRef = ref<HTMLElement | null>(null);
 // Modal state
 const { isModalOpen } = useModalState();
 
-// Debug: log modal state changes
-watch(isModalOpen, (newValue) => {
-  console.log('Modal state changed:', newValue);
-}, { immediate: true });
-
 // Computed classes
 const triggerClasses = computed(() => {
   const baseClasses = props.variant === 'avatar' 

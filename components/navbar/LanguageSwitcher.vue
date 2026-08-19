@@ -153,11 +153,7 @@ const currentLocaleName = computed(() => {
 
 // Phương pháp
 const switchLanguage = async (localeCode: string, close: () => void) => {
-  await $i18n.setLocale(localeCode);
-  // Lưu locale vào localStorage để persist
-  if (process.client) {
-    localStorage.setItem('preferred-locale', localeCode);
-  }
+  await $i18n.setLocale(localeCode as 'en' | 'vi');
   close();
 };
 </script>

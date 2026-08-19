@@ -1,0 +1,32 @@
+---
+description: Bắt buộc route MVP, middleware auth/guest/admin và điều hướng
+globs: "{pages/**/*.vue,middleware/**/*.ts,layouts/**/*.vue,components/navbar/**/*.vue}"
+alwaysApply: false
+---
+
+# Route và middleware
+
+- Route MVP: `/`, `/login`, `/register`, `/dashboard`, `/profile`, `/users`, `/users/:id`.
+- `/login` và `/register` dùng middleware `guest`.
+- `/dashboard` và `/profile` dùng middleware `auth`.
+- `/users` và `/users/:id` dùng `auth` rồi `admin`.
+- Todo create/edit được phép là modal trên `/dashboard`; không bắt buộc page riêng.
+- Middleware `auth` phải await restore session; thiếu token hoặc `/auth/me` thất bại → `/login`.
+- Middleware `guest` chờ auth init; user hợp lệ → `/dashboard`.
+- Middleware `admin` chạy sau auth; `role !== "admin"` thì từ chối/redirect.
+- Guest vào route protected → `/login`, giữ `redirect` nếu cần.
+- User thường vào route admin → `/dashboard` hoặc trang 403.
+- Menu admin chỉ hiện khi `auth.user.role === "admin"`.
+- Middleware chỉ cải thiện UX; không thay thế kiểm tra quyền backend.
+
+```ts
+// ❌ BAD
+if (auth.isLoggedIn && !auth.user) {
+  auth.fetchMe()
+}
+
+// ✅ GOOD
+if (auth.isLoggedIn && !auth.user) {
+  await auth.fetchMe()
+}
+```

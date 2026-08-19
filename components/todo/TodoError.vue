@@ -12,7 +12,10 @@
         <div class="ml-4 flex-1">
           <h3 class="text-lg font-semibold text-red-800">{{ $t('dashboard.errorTitle') }}</h3>
           <div class="mt-2 text-red-700">{{ error }}</div>
-          <div class="mt-4">
+          <div class="mt-4 flex gap-3">
+            <BaseButton @click="$emit('retry')" variant="primary" size="sm">
+              {{ $t('common.retry') }}
+            </BaseButton>
             <BaseButton @click="$emit('dismiss')" variant="ghost" size="sm" class="text-red-600 hover:text-red-700">
               {{ $t('dashboard.dismiss') }}
             </BaseButton>
@@ -34,5 +37,6 @@ defineProps<Props>()
 // Emits
 defineEmits<{
   dismiss: []
+  retry: []
 }>()
 </script>

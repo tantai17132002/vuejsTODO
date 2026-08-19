@@ -9,7 +9,7 @@
       "user": "User Management"
     },
     "profile": "Profile",
-    "settings": "Settings",
+    "userMenu": "User menu for {username}",
     "logout": "Logout",
     "logoutConfirmTitle": "Confirm Logout",
     "logoutConfirmMessage": "Are you sure you want to logout? You will need to login again to access your account.",
@@ -89,7 +89,8 @@
     "registering": "Creating account...",
     "errorTitle": "Registration Error",
     "wrongUsername": "Username already exists, please choose a different username",
-    "wrongEmail": "Email already registered, please use a different email"
+    "wrongEmail": "Email already registered, please use a different email",
+    "conflict": "Username or email already exists"
   },
   "dashboard": {
     "todoList": "List of jobs",
@@ -117,7 +118,24 @@
     "filterCompleted": "Completed",
     "filterAllDescription": "All tasks",
     "filterPendingDescription": "Incomplete tasks",
-    "filterCompletedDescription": "Completed tasks"
+    "filterCompletedDescription": "Completed tasks",
+    "loadingHint": "Loading your todos...",
+    "search": "Search",
+    "searchPlaceholder": "Search by title or description",
+    "dateFrom": "From date",
+    "dateTo": "To date",
+    "sortBy": "Sort by",
+    "sortOrder": "Sort order",
+    "sortCreatedAt": "Created at",
+    "sortUpdatedAt": "Updated at",
+    "sortTitle": "Title",
+    "sortStatus": "Status",
+    "sortId": "ID",
+    "sortAsc": "Ascending",
+    "sortDesc": "Descending",
+    "resetFilters": "Reset filters",
+    "markComplete": "Mark as complete",
+    "markIncomplete": "Mark as incomplete"
   },
   "todoForm": {
     "title": "Create or edit your todo",
@@ -130,7 +148,10 @@
     "save": "Save",
     "saving": "Saving...",
     "createError": "An error occurred while creating todo",
-    "updateError": "An error occurred while updating todo"
+    "updateError": "An error occurred while updating todo",
+    "noChanges": "No changes to save",
+    "statusLabel": "Completion status",
+    "statusDescription": "Turn on if this todo is done"
   },
   "pagination": {
     "showing": "Showing",
@@ -157,6 +178,48 @@
   },
   "common": {
     "success": "Operation successful!",
-    "error": "An error occurred!"
+    "error": "An error occurred!",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "saving": "Saving..."
+  },
+  "errors": {
+    "validation": "Invalid request data",
+    "unauthorized": "Your session is invalid",
+    "forbidden": "You do not have permission to do this",
+    "notFound": "Resource not found",
+    "conflict": "This change conflicts with existing data",
+    "server": "Server error, please try again",
+    "network": "Connection lost, please check your network"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Current session information",
+    "username": "Username",
+    "role": "Role",
+    "email": "Email",
+    "createdAt": "Created at"
+  },
+  "users": {
+    "title": "User management",
+    "subtitle": "Accounts in the system",
+    "detailTitle": "User details",
+    "empty": "No users yet",
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "createdAt": "Created at",
+    "updatedAt": "Updated at",
+    "actions": "Actions",
+    "view": "View",
+    "back": "Back",
+    "roleUser": "User",
+    "roleAdmin": "Admin",
+    "updateRole": "Update role",
+    "saveRole": "Save role",
+    "roleUpdateSuccess": "Role updated",
+    "downgradeTitle": "Confirm downgrade",
+    "downgradeMessage": "Are you sure you want to remove admin access from this user?",
+    "lastAdminConflict": "Cannot demote the last remaining admin"
   }
 }

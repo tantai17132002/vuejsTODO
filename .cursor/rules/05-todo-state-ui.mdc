@@ -1,0 +1,27 @@
+---
+description: Giữ query todo, phân trang, CRUD modal và không lệch state
+globs: "{stores/todo.ts,pages/dashboard/**/*.vue,components/todo/**/*.vue,composables/useApi.ts}"
+alwaysApply: false
+---
+
+# Todo store và dashboard
+
+- Store giữ toàn bộ `TodoQuery`: page, limit, isDone, search, dateFrom, dateTo, sortBy, sortOrder.
+- Đổi trang không làm mất filter; đổi filter/search reset page về 1.
+- Chỉ một request load danh sách khi mount; không gọi `todoApi` rồi `todoStore.fetchTodos` liên tiếp.
+- Page/component không vừa gọi composable vừa mutate store theo hai luồng khác nhau.
+- Create/edit modal chỉ gửi `title`, `description`, `isDone`; không gửi `id`, `ownerId`, timestamps.
+- Edit phải truyền trạng thái edit để hiện toggle `isDone`.
+- Toggle gửi `PATCH /todos/:id` với `{ isDone }`; optimistic update phải rollback khi lỗi.
+- Xóa cần confirmation; disable nút khi đang xóa; trang rỗng thì lùi page.
+- Search debounce; xử lý response cũ bằng cancel hoặc request identity.
+- Không phụ thuộc `filters` echo để quyết định quyền.
+- Có loading, empty, error có retry và pagination theo metadata backend.
+
+```ts
+// ❌ BAD: đổi trang xóa filter
+await fetchTodos('', page)
+
+// ✅ GOOD: giữ query hiện tại
+await fetchTodos({ ...this.query, page })
+```

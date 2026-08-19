@@ -1,173 +1,165 @@
-// Composable useApi - Gọi API và hiển thị toast tự động
-export const useApi = () => {
-  // Lấy các plugin từ Nuxt app
-  const { $toast } = useNuxtApp(); // Plugin toast để hiển thị thông báo
-  const { $axios } = useNuxtApp(); // Plugin axios để gọi API
-  const { t } = useI18n(); // Plugin i18n để đa ngôn ngữ
+import type { AxiosResponse } from 'axios'
+import type { LoginPayload, LoginResponse, RegisterPayload, RegisterResponse, CurrentUser, UserRole } from '~/types/auth'
+import type { CreateTodoPayload, DeleteTodoResponse, Todo, TodoListResponse, TodoQuery, UpdateTodoPayload } from '~/types/todo'
+import type { User, UserListResponse, UserQuery } from '~/types/user'
+import { errorI18nKey, parseApiError } from '~/utils/apiError'
+import { translate } from '~/utils/translate'
 
-  // Hàm generic để gọi API với toast tự động
+interface ApiCallOptions {
+  successMessage?: string
+  showSuccessToast?: boolean
+  showErrorToast?: boolean
+}
+
+/**
+ * Nguồn ánh xạ endpoint duy nhất. Unwrap AxiosResponse.data, không giả định envelope { success, data }.
+ */
+export const useApi = () => {
+  const { $toast, $axios } = useNuxtApp()
+  const t = translate
+
+  const unwrap = async <T>(request: Promise<AxiosResponse<T>>): Promise<T> => {
+    const response = await request
+    return response.data
+  }
+
   const apiCall = async <T>(
-    apiFunction: () => Promise<T>, // Hàm gọi API (GET, POST, PUT, DELETE...)
-    options: {
-      successMessage?: string; // Thông báo thành công
-      errorMessage?: string; // Thông báo lỗi mặc định
-      showSuccessToast?: boolean; // Có hiển thị toast thành công không
-      showErrorToast?: boolean; // Có hiển thị toast lỗi không
-    } = {}
+    apiFunction: () => Promise<T>,
+    options: ApiCallOptions = {},
   ): Promise<T> => {
-    // Lấy các options với giá trị mặc định
     const {
-      successMessage = t('common.success'), // "Thao tác thành công!"
-      errorMessage = t('common.error'), // "Có lỗi xảy ra!"
-      showSuccessToast = true, // Mặc định hiển thị toast thành công
-      showErrorToast = true // Mặc định hiển thị toast lỗi
-    } = options;
+      successMessage = t('common.success'),
+      showSuccessToast = false,
+      showErrorToast = false,
+    } = options
 
     try {
-      // Gọi API function
-      const result = await apiFunction();
-      
-      // Nếu thành công và được phép hiển thị toast
+      const result = await apiFunction()
       if (showSuccessToast) {
-        $toast.closeAll(); // Clear all existing toasts trước
-        $toast.success(successMessage); // Hiển thị toast xanh
+        $toast.success(successMessage)
       }
-      
-      return result; // Trả về kết quả
-    } catch (error: any) {
-      // Nếu có lỗi và được phép hiển thị toast
+      return result
+    } catch (error: unknown) {
       if (showErrorToast) {
-        // Ưu tiên message từ backend, nếu không có thì dùng message mặc định
-        const message = error.response?.data?.message || errorMessage;
-        $toast.closeAll(); // Clear all existing toasts trước
-        $toast.error(message); // Hiển thị toast đỏ
+        const parsed = parseApiError(error)
+        const skipToast = parsed.statusCode === 401
+        if (!skipToast) {
+          $toast.error(t(errorI18nKey(parsed)))
+        }
       }
-      
-      throw error; // Ném lại lỗi để component xử lý
+      throw error
     }
-  };
+  }
 
-  // ===== TODO API CALLS =====
   const todoApi = {
-    // Lấy danh sách todos với phân trang và filter
-    fetchTodos: async (page: number = 1, limit: number = 10, isDone?: boolean) => {
-      const params: any = { page, limit };
-      if (isDone !== undefined) {
-        params.isDone = isDone;
-      }
-      
+    list: async (query: TodoQuery = {}) => {
       return apiCall(
-        () => $axios.get('/todos', { params }), // GET /todos?page=1&limit=10&isDone=true
-        {
-          successMessage: t('dashboard.fetchSuccess'), // "Đã tải danh sách todo!"
-          showSuccessToast: false // Không hiển thị toast khi load (tránh spam)
-        }
-      );
+        () => unwrap<TodoListResponse>($axios.get('/todos', { params: toTodoParams(query) })),
+        { showSuccessToast: false, showErrorToast: false },
+      )
     },
 
-    // Tạo todo mới
-    createTodo: async (data: { title: string; description?: string }) => {
+    getById: async (id: number) => {
       return apiCall(
-        () => $axios.post('/todos', data), // POST /todos với data
-        {
-          successMessage: t('dashboard.createSuccess') // "Todo đã được tạo thành công!"
-        }
-      );
+        () => unwrap<Todo>($axios.get(`/todos/${id}`)),
+        { showSuccessToast: false, showErrorToast: false },
+      )
     },
 
-    // Cập nhật todo
-    updateTodo: async (id: number, data: { title: string; description?: string; isDone?: boolean }) => {
+    create: async (payload: CreateTodoPayload) => {
       return apiCall(
-        () => $axios.patch(`/todos/${id}`, data), // PATCH /todos/123 với data
-        {
-          successMessage: t('dashboard.updateSuccess') // "Todo đã được cập nhật thành công!"
-        }
-      );
+        () => unwrap<Todo>($axios.post('/todos', payload)),
+        { successMessage: t('dashboard.createSuccess'), showSuccessToast: true },
+      )
     },
 
-    // Xóa todo
-    deleteTodo: async (id: number) => {
+    update: async (id: number, payload: UpdateTodoPayload, callOptions: ApiCallOptions = {}) => {
+      const isToggleOnly = payload.isDone !== undefined && payload.title === undefined && payload.description === undefined
+      const successMessage = isToggleOnly
+        ? (payload.isDone ? t('dashboard.completeSuccess') : t('dashboard.uncompleteSuccess'))
+        : t('dashboard.updateSuccess')
+
       return apiCall(
-        () => $axios.delete(`/todos/${id}`), // DELETE /todos/123
-        {
-          successMessage: t('dashboard.deleteSuccess') // "Todo đã được xóa thành công!"
-        }
-      );
+        () => unwrap<Todo>($axios.patch(`/todos/${id}`, payload)),
+        { successMessage, showSuccessToast: true, ...callOptions },
+      )
     },
 
-    // Toggle trạng thái hoàn thành của todo
-    toggleTodo: async (id: number, isDone: boolean) => {
+    remove: async (id: number) => {
       return apiCall(
-        () => $axios.patch(`/todos/${id}`, { isDone }), // PATCH /todos/123 với isDone
-        {
-          // Hiển thị message khác nhau tùy theo trạng thái
-          successMessage: isDone ? t('dashboard.completeSuccess') : t('dashboard.uncompleteSuccess')
-        }
-      );
-    }
-  };
+        () => unwrap<DeleteTodoResponse>($axios.delete(`/todos/${id}`)),
+        { successMessage: t('dashboard.deleteSuccess'), showSuccessToast: true },
+      )
+    },
+  }
 
-  // ===== AUTH API CALLS =====
   const authApi = {
-    // Đăng nhập
-    login: async (data: { email: string; password: string }) => {
+    login: async (payload: LoginPayload) => {
       return apiCall(
-        () => $axios.post('/auth/login', data), // POST /auth/login
-        {
-          successMessage: t('auth.loginSuccess') // "Đăng nhập thành công!"
-        }
-      );
+        () => unwrap<LoginResponse>($axios.post('/auth/login', payload)),
+        { showSuccessToast: false, showErrorToast: false },
+      )
     },
 
-    // Đăng ký tài khoản
-    register: async (data: { name: string; email: string; password: string }) => {
+    register: async (payload: RegisterPayload) => {
       return apiCall(
-        () => $axios.post('/auth/register', data), // POST /auth/register
-        {
-          successMessage: t('auth.registerSuccess') // "Đăng ký thành công!"
-        }
-      );
+        () => unwrap<RegisterResponse>($axios.post('/auth/register', payload)),
+        { successMessage: t('auth.registerSuccess'), showSuccessToast: true, showErrorToast: false },
+      )
     },
 
-    // Đăng xuất
-    logout: async () => {
+    me: async (token?: string | null) => {
+      const headers = token ? { Authorization: `Bearer ${token}` } : undefined
       return apiCall(
-        () => $axios.post('/auth/logout'), // POST /auth/logout
-        {
-          successMessage: t('auth.logoutSuccess') // "Đăng xuất thành công!"
-        }
-      );
-    }
-  };
+        () => unwrap<CurrentUser>($axios.get('/auth/me', { headers })),
+        { showSuccessToast: false, showErrorToast: false },
+      )
+    },
+  }
 
-  // ===== USER API CALLS =====
   const userApi = {
-    // Lấy thông tin profile của user
-    getProfile: async () => {
+    list: async (query: UserQuery = {}) => {
       return apiCall(
-        () => $axios.get('/user/profile'), // GET /user/profile
-        {
-          showSuccessToast: false // Không hiển thị toast khi load profile
-        }
-      );
+        () => unwrap<UserListResponse>($axios.get('/users', { params: query })),
+        { showSuccessToast: false, showErrorToast: false },
+      )
     },
 
-    // Cập nhật thông tin profile
-    updateProfile: async (data: { name?: string; email?: string }) => {
+    getById: async (id: number) => {
       return apiCall(
-        () => $axios.put('/user/profile', data), // PUT /user/profile
-        {
-          successMessage: t('user.profileUpdateSuccess') // "Cập nhật thông tin thành công!"
-        }
-      );
-    }
-  };
+        () => unwrap<User>($axios.get(`/users/${id}`)),
+        { showSuccessToast: false, showErrorToast: false },
+      )
+    },
 
-  // Trả về các API functions để sử dụng trong components
+    updateRole: async (id: number, role: UserRole) => {
+      return apiCall(
+        () => unwrap<User>($axios.patch(`/users/${id}/role`, { role })),
+        { successMessage: t('users.roleUpdateSuccess'), showSuccessToast: true, showErrorToast: false },
+      )
+    },
+  }
+
   return {
-    apiCall, // Hàm generic để gọi API với toast
-    todoApi, // Các API liên quan đến todo
-    authApi, // Các API liên quan đến authentication
-    userApi // Các API liên quan đến user profile
-  };
-};
+    apiCall,
+    todoApi,
+    authApi,
+    userApi,
+  }
+}
+
+/** Chỉ gửi param có trong contract GET /todos. */
+function toTodoParams(query: TodoQuery): Record<string, string | number | boolean> {
+  const params: Record<string, string | number | boolean> = {}
+
+  if (query.page !== undefined) params.page = query.page
+  if (query.limit !== undefined) params.limit = query.limit
+  if (query.isDone !== undefined) params.isDone = query.isDone
+  if (query.search) params.search = query.search
+  if (query.dateFrom) params.dateFrom = query.dateFrom
+  if (query.dateTo) params.dateTo = query.dateTo
+  if (query.sortBy) params.sortBy = query.sortBy
+  if (query.sortOrder) params.sortOrder = query.sortOrder
+
+  return params
+}

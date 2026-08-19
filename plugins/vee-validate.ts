@@ -8,7 +8,6 @@ export default defineNuxtPlugin(() => {
     validateOnInput: false,    // Không validate khi gõ
     validateOnChange: false,   // Không validate khi thay đổi
     validateOnBlur: false, // Không validate khi click ra ngoài
-    validateOnMount: false,   // Không validate khi mount
     validateOnModelUpdate: false, // Không validate khi model update
   })
 });

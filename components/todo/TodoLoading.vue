@@ -11,7 +11,7 @@
       </div>
       <div>
         <h3 class="text-lg font-medium text-gray-900">{{ $t('dashboard.loading') }}</h3>
-        <p class="text-gray-500 text-sm">Đang tải danh sách công việc...</p>
+        <p class="text-gray-500 text-sm">{{ $t('dashboard.loadingHint') }}</p>
       </div>
     </div>
   </div>

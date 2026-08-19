@@ -1,116 +1,149 @@
 <template>
-  <UiDropdown variant="avatar">
-    <template #trigger>
-      <BaseButton 
-        variant="ghost" 
-        size="md" 
-        class="bg-white/20 hover:bg-white/30 text-white border-white/30 hover:border-white/50 flex items-center gap-2 transition-all duration-200 rounded-md"
+  <div class="p-4 border-b border-gray-100 bg-gray-50 space-y-3">
+    <div class="flex flex-col lg:flex-row gap-3">
+      <label class="sr-only" for="todo-search">{{ $t('dashboard.search') }}</label>
+      <input
+        id="todo-search"
+        v-model="searchInput"
+        type="search"
+        :placeholder="$t('dashboard.searchPlaceholder')"
+        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+      />
+
+      <select
+        v-model="statusFilter"
+        class="px-3 py-2 border border-gray-300 rounded-lg"
+        :aria-label="$t('dashboard.filterBy')"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-        </svg>
-        <span>{{ getFilterLabel(currentFilter) }}</span>
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </BaseButton>
-    </template>
-    
-    <template #items="{ close }">
-      <div class="flex flex-col space-y-1 p-2">
-        <DropdownItem 
-          @click="() => { $emit('filterChange', 'all'); close(); }" 
-          :active="currentFilter === 'all'" 
-          class="!flex !items-center !gap-3 !px-4 !py-3 !rounded-lg !transition-all !duration-200 hover:!bg-purple-50 hover:!text-purple-700 !cursor-pointer group"
-          :class="currentFilter === 'all' ? '!bg-purple-100 !text-purple-800 !font-medium' : '!text-gray-700'"
-        >
-          <template #icon>
-            <div class="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
-                 :class="currentFilter === 'all' ? 'bg-purple-200 text-purple-700' : 'bg-gray-100 text-gray-500 group-hover:bg-purple-200 group-hover:text-purple-600'">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-              </svg>
-            </div>
-          </template>
-          <div class="flex flex-col">
-            <span class="font-medium">{{ $t('dashboard.filterAll') }}</span>
-            <span class="text-xs text-gray-500 mt-0.5">{{ $t('dashboard.filterAllDescription') }}</span>
-          </div>
-        </DropdownItem>
-        
-        <DropdownItem 
-          @click="() => { $emit('filterChange', 'pending'); close(); }" 
-          :active="currentFilter === 'pending'" 
-          class="!flex !items-center !gap-3 !px-4 !py-3 !rounded-lg !transition-all !duration-200 hover:!bg-orange-50 hover:!text-orange-700 !cursor-pointer group"
-          :class="currentFilter === 'pending' ? '!bg-orange-100 !text-orange-800 !font-medium' : '!text-gray-700'"
-        >
-          <template #icon>
-            <div class="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
-                 :class="currentFilter === 'pending' ? 'bg-orange-200 text-orange-700' : 'bg-gray-100 text-gray-500 group-hover:bg-orange-200 group-hover:text-orange-600'">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-          </template>
-          <div class="flex flex-col">
-            <span class="font-medium">{{ $t('dashboard.filterPending') }}</span>
-            <span class="text-xs text-gray-500 mt-0.5">{{ $t('dashboard.filterPendingDescription') }}</span>
-          </div>
-        </DropdownItem>
-        
-        <DropdownItem 
-          @click="() => { $emit('filterChange', 'completed'); close(); }" 
-          :active="currentFilter === 'completed'" 
-          class="!flex !items-center !gap-3 !px-4 !py-3 !rounded-lg !transition-all !duration-200 hover:!bg-green-50 hover:!text-green-700 !cursor-pointer group"
-          :class="currentFilter === 'completed' ? '!bg-green-100 !text-green-800 !font-medium' : '!text-gray-700'"
-        >
-          <template #icon>
-            <div class="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200"
-                 :class="currentFilter === 'completed' ? 'bg-green-200 text-green-700' : 'bg-gray-100 text-gray-500 group-hover:bg-green-200 group-hover:text-green-600'">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
-          </template>
-          <div class="flex flex-col">
-            <span class="font-medium">{{ $t('dashboard.filterCompleted') }}</span>
-            <span class="text-xs text-gray-500 mt-0.5">{{ $t('dashboard.filterCompletedDescription') }}</span>
-          </div>
-        </DropdownItem>
+        <option value="all">{{ $t('dashboard.filterAll') }}</option>
+        <option value="pending">{{ $t('dashboard.filterPending') }}</option>
+        <option value="completed">{{ $t('dashboard.filterCompleted') }}</option>
+      </select>
+
+      <select
+        v-model="sortBy"
+        class="px-3 py-2 border border-gray-300 rounded-lg"
+        :aria-label="$t('dashboard.sortBy')"
+      >
+        <option value="createdAt">{{ $t('dashboard.sortCreatedAt') }}</option>
+        <option value="updatedAt">{{ $t('dashboard.sortUpdatedAt') }}</option>
+        <option value="title">{{ $t('dashboard.sortTitle') }}</option>
+        <option value="isDone">{{ $t('dashboard.sortStatus') }}</option>
+        <option value="id">{{ $t('dashboard.sortId') }}</option>
+      </select>
+
+      <select
+        v-model="sortOrder"
+        class="px-3 py-2 border border-gray-300 rounded-lg"
+        :aria-label="$t('dashboard.sortOrder')"
+      >
+        <option value="desc">{{ $t('dashboard.sortDesc') }}</option>
+        <option value="asc">{{ $t('dashboard.sortAsc') }}</option>
+      </select>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 items-end">
+      <div class="flex-1">
+        <label for="dateFrom" class="block text-xs text-gray-600 mb-1">{{ $t('dashboard.dateFrom') }}</label>
+        <input
+          id="dateFrom"
+          v-model="dateFrom"
+          type="date"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+        />
       </div>
-    </template>
-  </UiDropdown>
+      <div class="flex-1">
+        <label for="dateTo" class="block text-xs text-gray-600 mb-1">{{ $t('dashboard.dateTo') }}</label>
+        <input
+          id="dateTo"
+          v-model="dateTo"
+          type="date"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+        />
+      </div>
+      <BaseButton variant="ghost" @click="$emit('reset')">
+        {{ $t('dashboard.resetFilters') }}
+      </BaseButton>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-// Import i18n
-const { t } = useI18n();
+import type { TodoQuery } from '~/types/todo'
 
-// Props
 interface Props {
-  currentFilter?: string
+  query: TodoQuery
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  currentFilter: 'all'
-})
+const props = defineProps<Props>()
 
-// Emits
 const emit = defineEmits<{
-  filterChange: [filter: string]
+  filterChange: [filters: TodoQuery]
+  reset: []
 }>()
 
-// Methods
-const getFilterLabel = (filter: string) => {
-  switch (filter) {
-    case 'all':
-      return t('dashboard.filterAll');
-    case 'pending':
-      return t('dashboard.filterPending');
-    case 'completed':
-      return t('dashboard.filterCompleted');
-    default:
-      return t('dashboard.filterAll');
-  }
-};
+const searchInput = ref(props.query.search || '')
+const statusFilter = ref(props.query.isDone === true ? 'completed' : props.query.isDone === false ? 'pending' : 'all')
+const dateFrom = ref(toDateInput(props.query.dateFrom))
+const dateTo = ref(toDateInput(props.query.dateTo))
+const sortBy = ref(props.query.sortBy || 'createdAt')
+const sortOrder = ref(props.query.sortOrder || 'desc')
+
+const ready = ref(false)
+let syncing = false
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  () => props.query,
+  (query) => {
+    syncing = true
+    searchInput.value = query.search || ''
+    statusFilter.value = query.isDone === true ? 'completed' : query.isDone === false ? 'pending' : 'all'
+    dateFrom.value = toDateInput(query.dateFrom)
+    dateTo.value = toDateInput(query.dateTo)
+    sortBy.value = query.sortBy || 'createdAt'
+    sortOrder.value = query.sortOrder || 'desc'
+    nextTick(() => {
+      syncing = false
+    })
+  },
+  { deep: true },
+)
+
+onMounted(() => {
+  ready.value = true
+})
+
+watch(searchInput, (value) => {
+  if (!ready.value || syncing) return
+  if (searchTimer) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => emitFilters({ search: value.trim() || undefined }), 400)
+})
+
+watch([statusFilter, dateFrom, dateTo, sortBy, sortOrder], () => {
+  if (!ready.value || syncing) return
+  emitFilters()
+})
+
+function emitFilters(extra: TodoQuery = {}) {
+  const isDone = statusFilter.value === 'completed' ? true : statusFilter.value === 'pending' ? false : undefined
+  emit('filterChange', {
+    isDone,
+    search: searchInput.value.trim() || undefined,
+    dateFrom: dateFrom.value ? new Date(`${dateFrom.value}T00:00:00.000Z`).toISOString() : undefined,
+    dateTo: dateTo.value ? new Date(`${dateTo.value}T23:59:59.999Z`).toISOString() : undefined,
+    sortBy: sortBy.value as TodoQuery['sortBy'],
+    sortOrder: sortOrder.value as TodoQuery['sortOrder'],
+    ...extra,
+  })
+}
+
+function toDateInput(iso?: string) {
+  if (!iso) return ''
+  return iso.slice(0, 10)
+}
+
+onUnmounted(() => {
+  if (searchTimer) clearTimeout(searchTimer)
+})
 </script>

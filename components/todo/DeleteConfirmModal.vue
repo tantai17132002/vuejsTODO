@@ -217,7 +217,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Todo } from '~/stores/todo'
+import type { Todo } from '~/types/todo'
 
 // Props
 interface Props {

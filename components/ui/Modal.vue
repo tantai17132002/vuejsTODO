@@ -2,6 +2,8 @@
   <div
     v-if="isOpen"
     class="fixed inset-0 z-50 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
     @click="handleBackdropClick"
   >
     <!-- Backdrop -->

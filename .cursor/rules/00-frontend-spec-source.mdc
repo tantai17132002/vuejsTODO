@@ -1,0 +1,16 @@
+---
+description: Bắt buộc dùng spec dự án và spec frontend làm nguồn sự thật
+alwaysApply: true
+---
+
+# Nguồn đặc tả frontend
+
+- Trước khi thay đổi hành vi frontend, đọc `../project-spec.md` và `FRONTEND_SPEC.md`.
+- `../project-spec.md` sở hữu endpoint, field công khai, role, status code và hình dạng response.
+- `FRONTEND_SPEC.md` sở hữu route, layout, store, middleware, session, UX và test frontend.
+- Khi xung đột, thứ tự ưu tiên: spec dự án, rồi spec frontend, rồi code hiện tại.
+- Hành vi liệt kê trong “Khoảng cách của code hiện tại so với spec” là nợ kỹ thuật, không phải mẫu để sao chép.
+- Không tự suy diễn response, không gọi endpoint ngoài hợp đồng, không đổi field/role/error một phía.
+- Thay đổi hợp đồng phá vỡ tương thích phải cập nhật đồng bộ spec dự án, spec backend, spec frontend, backend và frontend.
+- Kiểm tra quyền trên UI chỉ phục vụ UX; backend vẫn là nơi kiểm tra quyền cuối cùng.
+- Trước khi kết thúc, đối chiếu thay đổi với tiêu chí chấp nhận liên quan trong cả hai spec.

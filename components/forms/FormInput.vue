@@ -25,23 +25,27 @@
       <!-- Input field chính -->
       <input
         :id="id"
-        :value="modelValue"
         v-bind="$attrs"
+        :value="modelValue"
         :type="type"
         :placeholder="placeholder"
         :class="inputClasses"
-        @input="$emit('update:modelValue', $event.target.value)"
+        :aria-invalid="!!error"
+        :aria-describedby="error ? `${id}-error` : undefined"
+        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
     </div>
     
     <!-- Hiển thị lỗi validation nếu có -->
-    <div v-if="error" class="mt-2 text-sm text-red-600">
+    <div v-if="error" :id="`${id}-error`" class="mt-2 text-sm text-red-600">
       {{ error }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+defineOptions({ inheritAttrs: false })
+
 // Định nghĩa interface cho props
 interface Props {
   id: string;           // ID unique cho input
@@ -61,7 +65,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 // Định nghĩa events mà component có thể emit
-const emit = defineEmits<{
+defineEmits<{
   'update:modelValue': [value: string];  // Event cho v-model
 }>();
 

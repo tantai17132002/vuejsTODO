@@ -9,7 +9,7 @@
       "user": "Quản lý người dùng"
     },
     "profile": "Hồ sơ",
-    "settings": "Cài đặt",
+    "userMenu": "Menu người dùng {username}",
     "logout": "Đăng xuất",
     "logoutConfirmTitle": "Xác nhận đăng xuất",
     "logoutConfirmMessage": "Bạn có chắc chắn muốn đăng xuất? Bạn sẽ cần đăng nhập lại để truy cập tài khoản.",
@@ -89,7 +89,8 @@
     "registering": "Đang tạo tài khoản...",
     "errorTitle": "Lỗi đăng ký",
     "wrongUsername": "Tên người dùng đã tồn tại, vui lòng chọn tên khác",
-    "wrongEmail": "Email đã được đăng ký, vui lòng sử dụng email khác"
+    "wrongEmail": "Email đã được đăng ký, vui lòng sử dụng email khác",
+    "conflict": "Tên người dùng hoặc email đã tồn tại"
   },
   "dashboard": {
     "todoList": "Danh sách các công việc",
@@ -117,7 +118,24 @@
     "filterCompleted": "Đã hoàn thành",
     "filterAllDescription": "Tất cả công việc",
     "filterPendingDescription": "Công việc chưa hoàn thành",
-    "filterCompletedDescription": "Công việc đã hoàn thành"
+    "filterCompletedDescription": "Công việc đã hoàn thành",
+    "loadingHint": "Đang tải danh sách công việc...",
+    "search": "Tìm kiếm",
+    "searchPlaceholder": "Tìm theo tiêu đề hoặc mô tả",
+    "dateFrom": "Từ ngày",
+    "dateTo": "Đến ngày",
+    "sortBy": "Sắp xếp theo",
+    "sortOrder": "Thứ tự",
+    "sortCreatedAt": "Ngày tạo",
+    "sortUpdatedAt": "Ngày cập nhật",
+    "sortTitle": "Tiêu đề",
+    "sortStatus": "Trạng thái",
+    "sortId": "ID",
+    "sortAsc": "Tăng dần",
+    "sortDesc": "Giảm dần",
+    "resetFilters": "Xóa bộ lọc",
+    "markComplete": "Đánh dấu hoàn thành",
+    "markIncomplete": "Bỏ đánh dấu hoàn thành"
   },
   "todoForm": {
     "title": "Tạo hoặc chỉnh sửa công việc",
@@ -130,7 +148,10 @@
     "save": "Lưu",
     "saving": "Đang lưu...",
     "createError": "Có lỗi xảy ra khi tạo công việc",
-    "updateError": "Có lỗi xảy ra khi cập nhật công việc"
+    "updateError": "Có lỗi xảy ra khi cập nhật công việc",
+    "noChanges": "Không có thay đổi để lưu",
+    "statusLabel": "Trạng thái hoàn thành",
+    "statusDescription": "Bật nếu công việc đã hoàn thành"
   },
   "pagination": {
     "showing": "Hiển thị",
@@ -157,6 +178,48 @@
   },
   "common": {
     "success": "Thao tác thành công!",
-    "error": "Có lỗi xảy ra!"
+    "error": "Có lỗi xảy ra!",
+    "loading": "Đang tải...",
+    "retry": "Thử lại",
+    "saving": "Đang lưu..."
+  },
+  "errors": {
+    "validation": "Dữ liệu không hợp lệ",
+    "unauthorized": "Phiên đăng nhập không hợp lệ",
+    "forbidden": "Bạn không có quyền thực hiện thao tác này",
+    "notFound": "Không tìm thấy tài nguyên",
+    "conflict": "Dữ liệu bị xung đột",
+    "server": "Lỗi máy chủ, vui lòng thử lại",
+    "network": "Mất kết nối, vui lòng kiểm tra mạng"
+  },
+  "profile": {
+    "title": "Hồ sơ",
+    "subtitle": "Thông tin phiên hiện tại",
+    "username": "Tên người dùng",
+    "role": "Vai trò",
+    "email": "Email",
+    "createdAt": "Ngày tạo"
+  },
+  "users": {
+    "title": "Quản lý người dùng",
+    "subtitle": "Danh sách tài khoản trong hệ thống",
+    "detailTitle": "Chi tiết người dùng",
+    "empty": "Chưa có người dùng",
+    "username": "Tên người dùng",
+    "email": "Email",
+    "role": "Vai trò",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "actions": "Thao tác",
+    "view": "Xem",
+    "back": "Quay lại",
+    "roleUser": "Người dùng",
+    "roleAdmin": "Quản trị viên",
+    "updateRole": "Cập nhật vai trò",
+    "saveRole": "Lưu vai trò",
+    "roleUpdateSuccess": "Đã cập nhật vai trò",
+    "downgradeTitle": "Xác nhận hạ quyền",
+    "downgradeMessage": "Bạn có chắc muốn hạ quyền quản trị của người dùng này?",
+    "lastAdminConflict": "Không thể hạ cấp quản trị viên cuối cùng"
   }
 }

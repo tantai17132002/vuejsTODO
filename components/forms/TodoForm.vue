@@ -101,10 +101,10 @@
               </div>
               <div>
                 <h3 class="font-medium text-gray-900">
-                  {{ $t("statusLabel") }}
+                  {{ $t("todoForm.statusLabel") }}
                 </h3>
                 <p class="text-sm text-gray-500">
-                  {{ $t("statusDescription") }}
+                  {{ $t("todoForm.statusDescription") }}
                 </p>
               </div>
             </div>
@@ -268,6 +268,7 @@ const schema = computed(() =>
   yup.object({
     title: yup
       .string()
+      .transform((value) => (typeof value === 'string' ? value.trim() : value))
       .required($t("validation.title.required"))
       .min(3, $t("validation.title.minLength")),
   })

@@ -3,71 +3,60 @@
     :loading="loading"
     :error="error"
     :initial-data="todo"
+    :is-edit="true"
     @submit="handleUpdate"
     @cancel="handleCancel"
   />
 </template>
 
 <script setup lang="ts">
-// Import stores
-import { useTodoStore } from "~/stores/todo";
-import type { Todo } from "~/stores/todo";
+import type { Todo } from '~/types/todo'
 
-// Props
 interface Props {
   todo: Todo
 }
 
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
-// Emits
 const emit = defineEmits<{
   cancel: []
   success: []
-}>();
+}>()
 
-// Lấy stores, i18n và API
-const todoStore = useTodoStore();
-const { t } = useI18n();
-const { todoApi } = useApi();
-const router = useRouter();
+const todoStore = useTodoStore()
+const { t } = useI18n()
+const loading = ref(false)
+const error = ref('')
 
-
-// Reactive state
-const loading = ref(false);
-const error = ref('');
-
-// Hàm xử lý cập nhật todo
 const handleUpdate = async (data: { title: string; description?: string; isDone?: boolean }) => {
-  try {
-    loading.value = true;
-    error.value = '';
-    
-    // Sử dụng todoApi với toast tự động
-    const updatedTodo = await todoApi.updateTodo(props.todo.id, {
-      title: data.title,
-      description: data.description,
-      isDone: data.isDone
-    });
-    
-    // Cập nhật store với response từ API
-    const index = todoStore.todos.findIndex(todo => todo.id === props.todo.id);
-    if (index !== -1) {
-      todoStore.todos[index] = updatedTodo.data || updatedTodo;
-    }
-    
-    // Emit success event để đóng modal
-    emit('success');
-  } catch (err: any) {
-    // Xử lý lỗi
-    error.value = err.response?.data?.message || t('todoForm.updateError');
-  } finally {
-    loading.value = false;
-  }
-};
+  const title = data.title.trim()
+  const hasChange =
+    title !== props.todo.title
+    || (data.description || '') !== (props.todo.description || '')
+    || data.isDone !== props.todo.isDone
 
-// Hàm xử lý hủy
+  if (!hasChange) {
+    error.value = t('todoForm.noChanges')
+    return
+  }
+
+  try {
+    loading.value = true
+    error.value = ''
+    await todoStore.updateTodo(props.todo.id, {
+      title,
+      description: data.description,
+      isDone: data.isDone,
+    })
+    emit('success')
+  } catch {
+    error.value = t('todoForm.updateError')
+  } finally {
+    loading.value = false
+  }
+}
+
 const handleCancel = () => {
-  emit('cancel');
-};
+  emit('cancel')
+}
 </script>

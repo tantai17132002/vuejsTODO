@@ -1,0 +1,28 @@
+---
+description: Bắt buộc validation, trạng thái UI, i18n, a11y và không lệch hydration
+globs: "{pages,components,layouts,plugins,i18n}/**/*.{vue,ts,json}"
+alwaysApply: false
+---
+
+# UI, validation và i18n
+
+- Login: `usernameOrEmail` bắt buộc; password tối thiểu 8 ký tự.
+- Register: `username`, email hợp lệ, password tối thiểu 8; không có field role.
+- Todo title trim và bắt buộc; update phải có ít nhất một thay đổi.
+- Validation client phục vụ UX, không thay thế validation backend.
+- Phân biệt loading, empty, error, forbidden và confirmation.
+- Disable submit khi request đang chạy; chống double-click.
+- Toast cho mutation; không toast success khi fetch nền.
+- Label, focus, modal Escape/trap focus; icon button có accessible name.
+- Text UI dùng translation key; không hard-code tiếng Việt/Anh trong loading/error/date.
+- Format datetime theo locale đang active, không hard-code `vi-VN`.
+- `langDir` trỏ đúng `i18n/locales/`; tránh lệch SSR/client khi đọc localStorage.
+- Asset trong template phải tồn tại; dark mode không thuộc MVP.
+
+```ts
+// ❌ BAD
+password: yup.string().min(6)
+
+// ✅ GOOD
+password: yup.string().required().min(8)
+```

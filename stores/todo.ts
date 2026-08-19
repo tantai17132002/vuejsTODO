@@ -1,148 +1,166 @@
-// Interface định nghĩa cấu trúc dữ liệu Todo (match với backend)
-export interface Todo {
-  id: number                    // ID duy nhất của todo
-  title: string                 // Tiêu đề todo
-  description?: string          // Mô tả todo (tùy chọn)
-  isDone: boolean              // Trạng thái hoàn thành (backend dùng isDone)
-  createdAt: string            // Thời gian tạo (backend dùng createdAt)
-  updatedAt: string            // Thời gian cập nhật (backend dùng updatedAt)
-  ownerId: number              // ID của người sở hữu todo
-}
+import { defineStore } from 'pinia'
+import type { ApiError } from '~/types/api'
+import { EMPTY_PAGINATION } from '~/types/api'
+import type { CreateTodoPayload, Todo, TodoQuery, UpdateTodoPayload } from '~/types/todo'
+import { parseApiError } from '~/utils/apiError'
+import { DEFAULT_TODO_QUERY, mergeTodoQuery } from '~/utils/todoQuery'
+import { useApi } from '~/composables/useApi'
 
-// Store quản lý state của todos sử dụng Pinia
+/** Số thứ tự request để bỏ qua response cũ khi search/filter nhanh. */
+let fetchRequestId = 0
+
 export const useTodoStore = defineStore('todo', {
-  // State - dữ liệu được lưu trữ trong store
   state: () => ({
-    todos: [] as Todo[],        // Danh sách tất cả todos
-    loading: false,             // Trạng thái đang tải
-    error: null as string | null, // Thông báo lỗi
-    // Pagination state
-    currentPage: 1,             // Trang hiện tại
-    totalPages: 1,               // Tổng số trang
-    totalItems: 0,               // Tổng số items
-    itemsPerPage: 10            // Số items per page
+    items: [] as Todo[],
+    query: { ...DEFAULT_TODO_QUERY } as TodoQuery,
+    pagination: { ...EMPTY_PAGINATION },
+    filters: {} as Record<string, unknown>,
+    loading: false,
+    mutating: false,
+    error: null as ApiError | null,
   }),
 
-  // Getters - computed properties để lấy dữ liệu đã được xử lý
   getters: {
-    // Lấy danh sách todos đã hoàn thành
-    completedTodos: (state) => state.todos.filter(todo => todo.isDone),
-    // Lấy danh sách todos chưa hoàn thành
-    pendingTodos: (state) => state.todos.filter(todo => !todo.isDone),
-    // Tìm todo theo ID
-    getTodoById: (state) => (id: number) => state.todos.find(todo => todo.id === id)
+    todos: (state) => state.items,
   },
 
-  // Actions - các hàm thực hiện thao tác với dữ liệu
   actions: {
-    // Lấy danh sách todos từ API
-    async fetchTodos(query = '', page = 1) {
-      this.loading = true      // Bắt đầu loading
-      this.error = null        // Xóa lỗi cũ
+    /**
+     * Tải danh sách theo query hiện tại. Giữ filter khi đổi trang.
+     * Response lệch thứ tự bị bỏ qua bằng request identity.
+     */
+    async fetchTodos(queryPatch?: TodoQuery) {
+      if (queryPatch) {
+        this.query = mergeTodoQuery(this.query, queryPatch)
+      }
+
+      const requestId = ++fetchRequestId
+      this.loading = true
+      this.error = null
+
       try {
-        const { $axios } = useNuxtApp()
-        const res = await $axios.get(`/todos${query}`, {
-          params: {
-            page,
-            limit: this.itemsPerPage
-          }
+        const { todoApi } = useApi()
+        const response = await todoApi.list(this.query)
+        if (requestId !== fetchRequestId) {
+          return
+        }
+
+        this.items = response.todos || []
+        this.pagination = response.pagination || { ...EMPTY_PAGINATION }
+        this.filters = (response.filters || {}) as Record<string, unknown>
+      } catch (error: unknown) {
+        if (requestId !== fetchRequestId) {
+          return
+        }
+        const parsed = parseApiError(error)
+        this.error = {
+          statusCode: parsed.statusCode || 500,
+          message: parsed.message,
+          timestamp: new Date().toISOString(),
+          path: '/todos',
+          details: parsed.details,
+        }
+        throw error
+      } finally {
+        if (requestId === fetchRequestId) {
+          this.loading = false
+        }
+      }
+    },
+
+    async createTodo(payload: CreateTodoPayload) {
+      this.mutating = true
+      this.error = null
+      try {
+        const { todoApi } = useApi()
+        const created = await todoApi.create({
+          title: payload.title,
+          description: payload.description,
+          isDone: payload.isDone,
         })
-        // Backend trả về { todos: [], pagination: {}, filters: {} }
-        this.todos = res.data.todos || []
-        
-        // Cập nhật pagination info từ API response
-        if (res.data.pagination) {
-          // Map API response structure to our store
-          this.currentPage = res.data.pagination.page || page
-          this.totalPages = res.data.pagination.totalPages || 1
-          this.totalItems = res.data.pagination.total || 0
-        } else {
-          // Fallback nếu API không trả về pagination info
-          this.currentPage = page
-          this.totalItems = this.todos.length
-          this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage) || 1
-        }
-      } catch (err: any) {
-        // Lưu thông báo lỗi
-        this.error = err.response?.data?.message || 'Failed to fetch todos'
-        throw err
+        await this.fetchTodos()
+        return created
       } finally {
-        this.loading = false   // Kết thúc loading
+        this.mutating = false
       }
     },
 
-    // Thêm todo mới
-    async addTodo(payload: { title: string; description?: string }) {
-      this.loading = true
+    async updateTodo(id: number, payload: UpdateTodoPayload) {
+      this.mutating = true
       this.error = null
       try {
-        const { $axios } = useNuxtApp()
-        const res = await $axios.post('/todos', payload)
-        // Thêm todo mới vào đầu danh sách (unshift)
-        this.todos.unshift(res.data)
-      } catch (err: any) {
-        this.error = err.response?.data?.message || 'Failed to add todo'
-        throw err
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // Cập nhật todo
-    async updateTodo(id: number, data: Partial<Todo>) {
-      this.loading = true
-      this.error = null
-      try {
-        const { $axios } = useNuxtApp()
-        const res = await $axios.patch(`/todos/${id}`, data)
-        // Tìm và cập nhật todo trong local state
-        const index = this.todos.findIndex(todo => todo.id === id)
+        const { todoApi } = useApi()
+        const updated = await todoApi.update(id, payload)
+        const index = this.items.findIndex((todo) => todo.id === id)
         if (index !== -1) {
-          // Merge dữ liệu cũ với dữ liệu mới
-          this.todos[index] = { ...this.todos[index], ...res.data }
+          this.items[index] = updated
         }
-      } catch (err: any) {
-        this.error = err.response?.data?.message || 'Failed to update todo'
-        throw err
+        return updated
       } finally {
-        this.loading = false
+        this.mutating = false
       }
     },
 
-    // Xóa todo
+    /**
+     * PATCH { isDone }. Optimistic update rồi rollback nếu lỗi.
+     */
+    async toggleTodo(id: number, isDone: boolean) {
+      const todo = this.items.find((item) => item.id === id)
+      if (!todo) {
+        return
+      }
+
+      const previous = todo.isDone
+      todo.isDone = isDone
+
+      try {
+        const { todoApi } = useApi()
+        const updated = await todoApi.update(id, { isDone })
+        Object.assign(todo, updated)
+      } catch (error) {
+        todo.isDone = previous
+        throw error
+      }
+    },
+
     async deleteTodo(id: number) {
-      this.loading = true
+      this.mutating = true
       this.error = null
       try {
-        const { $axios } = useNuxtApp()
-        await $axios.delete(`/todos/${id}`)
-        // Xóa todo khỏi local state
-        this.todos = this.todos.filter(todo => todo.id !== id)
-      } catch (err: any) {
-        this.error = err.response?.data?.message || 'Failed to delete todo'
-        throw err
+        const { todoApi } = useApi()
+        await todoApi.remove(id)
+        this.items = this.items.filter((todo) => todo.id !== id)
+
+        if (this.items.length === 0 && (this.query.page || 1) > 1) {
+          await this.setPage((this.query.page || 1) - 1)
+        } else {
+          await this.fetchTodos()
+        }
       } finally {
-        this.loading = false
+        this.mutating = false
       }
     },
 
-    // Xóa thông báo lỗi
-    clearError() {
+    async setPage(page: number) {
+      await this.fetchTodos({ page })
+    },
+
+    async setFilters(filters: TodoQuery) {
+      await this.fetchTodos({ ...filters, page: 1 })
+    },
+
+    /**
+     * Xóa state để không lộ todo phiên trước sau logout.
+     */
+    reset() {
+      fetchRequestId += 1
+      this.items = []
+      this.query = { ...DEFAULT_TODO_QUERY }
+      this.pagination = { ...EMPTY_PAGINATION }
+      this.filters = {}
+      this.loading = false
+      this.mutating = false
       this.error = null
     },
-
-    // Toggle trạng thái hoàn thành của todo
-    async toggleTodo(id: number) {
-      const todo = this.getTodoById(id)
-      if (todo) {
-        // Đảo ngược trạng thái isDone
-        await this.updateTodo(id, { isDone: !todo.isDone })
-      }
-    },
-
-    // Thay đổi trang
-    async changePage(page: number) {
-      await this.fetchTodos('', page)
-    }
-  }
+  },
 })

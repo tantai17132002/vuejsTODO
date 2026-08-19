@@ -1,69 +1,43 @@
-## Setup
+# Todo App — Frontend (Nuxt)
 
-Make sure to install dependencies:
+Giao diện web cho Todo App. Spec: `FRONTEND_SPEC.md`, hợp đồng API: `../project-spec.md`.
+
+## Yêu cầu
+
+- Node.js 20+
+- Backend NestJS chạy tại `API_BASE_URL` (mặc định `http://localhost:3001`)
+
+## Cài đặt
 
 ```bash
-# npm
+cp .env.example .env
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+Biến môi trường công khai:
 
-Start the development server on `http://localhost:3000`:
+- `PORT`: cổng dev frontend, mặc định `3000`
+- `API_BASE_URL`: base URL REST API, mặc định `http://localhost:3001`
 
-```bash
-# npm
-npm run dev
+Không lưu JWT secret hay credential backend ở frontend.
 
-# pnpm
-pnpm dev
+## Scripts
 
-# yarn
-yarn dev
+| Script | Mục đích |
+| --- | --- |
+| `npm run dev` | Development server (`http://localhost:3000`) |
+| `npm run build` | Build production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | Kiểm tra TypeScript |
+| `npm run test` | Unit test |
+| `npm run test:e2e` | E2E (cần frontend + backend đang chạy) |
 
-# bun
-bun run dev
-```
+## Luồng chính
 
-## Production
+- `/login`, `/register` — khách
+- `/dashboard` — CRUD todo, filter, search, sort, phân trang
+- `/profile` — username và role từ `/auth/me`
+- `/users`, `/users/:id` — chỉ admin
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
+Logout là thao tác client-side, không gọi API.

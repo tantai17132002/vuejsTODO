@@ -52,7 +52,7 @@
           <template v-for="page in visiblePages" :key="page">
             <button
               v-if="page !== '...'"
-              @click="page !== currentPage && $emit('page-change', page)"
+              @click="page !== currentPage && $emit('page-change', Number(page))"
               :disabled="page === currentPage"
               :class="[
                 'relative inline-flex items-center px-4 py-2 text-sm font-medium transition-all duration-200 transform hover:scale-105',
@@ -99,7 +99,7 @@ interface Props {
 const props = defineProps<Props>()
 
 // Emits
-const emit = defineEmits<{
+defineEmits<{
   'page-change': [page: number]
 }>()
 

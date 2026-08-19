@@ -10,7 +10,9 @@
       <div class="flex-1 min-w-0">
         <div class="flex items-start gap-4">
           <!-- Checkbox -->
-          <button 
+          <button
+            type="button"
+            :aria-label="todo.isDone ? $t('dashboard.markIncomplete') : $t('dashboard.markComplete')"
             @click="handleToggle"
             :class="[
               'flex-shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300 transform hover:scale-110',
@@ -102,7 +104,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Todo } from '~/stores/todo'
+import type { Todo } from '~/types/todo'
+import { formatDateTime } from '~/utils/formatDate'
 
 defineOptions({
   inheritAttrs: false
@@ -136,14 +139,9 @@ const handleEdit = () => {
   emit('edit', props.todo)
 }
 
-// Format date
+const { locale } = useI18n()
+
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('vi-VN', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  return formatDateTime(dateString, locale.value)
 }
 </script>

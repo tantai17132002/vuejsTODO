@@ -33,11 +33,13 @@
       </div>
     </div>
 
+    <slot name="filters"></slot>
+
     <!-- Loading State -->
     <TodoLoading v-if="loading" />
 
     <!-- Error State -->
-    <TodoError v-else-if="error" :error="error" @dismiss="$emit('clearError')" />
+    <TodoError v-else-if="error" :error="error" @retry="$emit('retry')" @dismiss="$emit('clearError')" />
 
     <!-- Empty State -->
     <TodoEmpty v-else-if="todos.length === 0" />
@@ -68,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Todo } from '~/stores/todo'
+import type { Todo } from '~/types/todo'
 
 // Props
 interface Props {
@@ -82,7 +84,7 @@ interface Props {
   showPagination?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   currentPage: 1,
   totalPages: 1,
   totalItems: 0,
@@ -90,12 +92,12 @@ const props = withDefaults(defineProps<Props>(), {
   showPagination: false
 })
 
-// Emits
-const emit = defineEmits<{
+defineEmits<{
   toggle: [id: number, isDone: boolean]
-  delete: [id: number]
+  delete: [todo: Todo]
   edit: [todo: Todo]
   clearError: []
+  retry: []
   openCreateModal: []
   'page-change': [page: number]
 }>()

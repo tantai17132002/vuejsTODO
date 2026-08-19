@@ -1,0 +1,29 @@
+---
+description: Giữ Axios, useApi và xử lý lỗi khớp hợp đồng API
+globs: "{composables,plugins,stores,pages,components}/**/*.{ts,vue}"
+alwaysApply: false
+---
+
+# Hợp đồng API frontend
+
+- Base URL lấy từ `runtimeConfig.public.apiBaseUrl`.
+- Request cần xác thực gắn `Authorization: Bearer <access_token>`.
+- Backend trả response flat; không giả định envelope `{ success, data }`.
+- `useApi` unwrap `AxiosResponse.data` và trả typed payload.
+- Login gửi `{ usernameOrEmail, password }`; register gửi `{ username, email, password }`.
+- Login đọc `access_token`; register đọc `{ message, user }` và không lấy token.
+- Chỉ gọi endpoint trong spec: auth, todos, users. Xóa mapping ảo `/auth/logout`, `/user/profile`.
+- Logout là thao tác client-side; không gọi backend.
+- Ưu tiên `statusCode` và `details` khi map lỗi field; không parse substring message tiếng Anh.
+- `400` hiện field/form error; `401` xóa phiên trừ request login; `403` giữ phiên; `409` hiện conflict; network/`500` không xóa phiên ngay.
+- Không log token hoặc toàn bộ request headers.
+
+```ts
+// ❌ BAD
+authApi.login({ email, password })
+await $axios.post('/auth/logout')
+
+// ✅ GOOD
+authApi.login({ usernameOrEmail, password })
+auth.clearAuth()
+```

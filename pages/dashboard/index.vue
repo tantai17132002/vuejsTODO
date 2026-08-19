@@ -1,35 +1,33 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 relative z-0">
-    <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Todo List Component -->
       <TodoList
-        :todos="todoStore.todos"
+        :todos="todoStore.items"
         :loading="todoStore.loading"
-        :error="todoStore.error"
-        :current-page="todoStore.currentPage"
-        :total-pages="todoStore.totalPages"
-        :total-items="todoStore.totalItems"
-        :items-per-page="todoStore.itemsPerPage"
-        :show-pagination="todoStore.totalPages > 1"
+        :error="errorMessage"
+        :current-page="todoStore.pagination.page"
+        :total-pages="todoStore.pagination.totalPages"
+        :total-items="todoStore.pagination.total"
+        :items-per-page="todoStore.pagination.limit"
+        :show-pagination="todoStore.pagination.totalPages > 1"
         @toggle="handleToggle"
         @delete="handleDelete"
-        @clear-error="todoStore.clearError"
+        @retry="todoStore.fetchTodos()"
+        @clear-error="todoStore.error = null"
         @open-create-modal="showCreateModal = true"
         @edit="handleEdit"
         @page-change="handlePageChange"
       >
-        <!-- Filter Slot -->
-        <template #header-actions>
-          <TodoFilter 
-            :current-filter="currentFilter"
-            @filter-change="setFilter"
+        <template #filters>
+          <TodoFilter
+            :query="todoStore.query"
+            @filter-change="handleFilterChange"
+            @reset="handleResetFilters"
           />
         </template>
       </TodoList>
     </div>
 
-    <!-- Create Todo Modal -->
     <UiModal :is-open="showCreateModal" @close="showCreateModal = false">
       <TodoCreateTodo
         @cancel="showCreateModal = false"
@@ -37,7 +35,6 @@
       />
     </UiModal>
 
-    <!-- Edit Todo Modal -->
     <UiModal :is-open="showEditModal" @close="showEditModal = false">
       <TodoEditTodo
         v-if="editingTodo"
@@ -47,7 +44,6 @@
       />
     </UiModal>
 
-    <!-- Delete Confirm Modal -->
     <UiModal :is-open="showDeleteModal" @close="showDeleteModal = false">
       <TodoDeleteConfirmModal
         v-if="deletingTodo"
@@ -63,174 +59,117 @@
 </template>
 
 <script setup lang="ts">
-// Import stores
-import { useAuthStore } from "~/stores/auth";
-import { useTodoStore } from "~/stores/todo";
+import type { Todo, TodoQuery } from '~/types/todo'
+import { errorI18nKey, parseApiError } from '~/utils/apiError'
+import { todoQueryFromRoute, todoQueryToRoute } from '~/utils/todoQuery'
 
-// Lấy stores, i18n và API
-const auth = useAuthStore();
-const todoStore = useTodoStore();
-const { t } = useI18n();
-const { todoApi } = useApi();
-
-// Modal state management
-const { setModalOpen } = useModalState();
-
-// Định nghĩa middleware để bảo vệ route
 definePageMeta({
-  middleware: 'auth'
-});
+  middleware: 'auth',
+})
 
-// Modal state
-const showCreateModal = ref(false);
+const todoStore = useTodoStore()
+const route = useRoute()
+const router = useRouter()
+const { t } = useI18n()
+const { setModalOpen } = useModalState()
 
-// Edit modal state
-const showEditModal = ref(false);
-const editingTodo = ref(null);
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
+const editingTodo = ref<Todo | null>(null)
+const showDeleteModal = ref(false)
+const deletingTodo = ref<Todo | null>(null)
+const deleteLoading = ref(false)
+const deleteError = ref('')
 
-// Delete modal state
-const showDeleteModal = ref(false);
-const deletingTodo = ref<any>(null);
-const deleteLoading = ref(false);
-const deleteError = ref('');
+const errorMessage = computed(() => {
+  if (!todoStore.error) return null
+  return t(errorI18nKey({
+    statusCode: todoStore.error.statusCode,
+    message: typeof todoStore.error.message === 'string' ? todoStore.error.message : '',
+    details: todoStore.error.details || [],
+    fieldErrors: {},
+    isNetworkError: false,
+  }))
+})
 
-// Filter state
-const currentFilter = ref('all'); // 'all', 'pending', 'completed'
-
-// Watch all modal states and update global state
 watch([showCreateModal, showEditModal, showDeleteModal], ([create, edit, deleteModal]) => {
-  const anyModalOpen = create || edit || deleteModal;
-  setModalOpen(anyModalOpen);
-}, { immediate: true });
+  setModalOpen(create || edit || deleteModal)
+}, { immediate: true })
 
-// Load todos khi component mount
+/**
+ * Chỉ fetch một lần khi mount. Query lấy từ URL để reload giữ filter.
+ */
 onMounted(async () => {
-  await todoApi.fetchTodos();
-  // Cập nhật store sau khi fetch
-  await todoStore.fetchTodos();
-});
+  todoStore.query = todoQueryFromRoute(route.query)
+  await todoStore.fetchTodos()
+})
 
-// Hàm xử lý xóa todo
-const handleDelete = (todo: any) => {
-  deletingTodo.value = todo;
-  showDeleteModal.value = true;
-  deleteError.value = '';
-};
+watch(
+  () => todoStore.query,
+  (query) => {
+    router.replace({ query: todoQueryToRoute(query) })
+  },
+  { deep: true },
+)
 
-// Hàm xử lý toggle trạng thái todo
+const handleDelete = (todo: Todo) => {
+  deletingTodo.value = todo
+  showDeleteModal.value = true
+  deleteError.value = ''
+}
+
 const handleToggle = async (id: number, isDone: boolean) => {
-  await todoApi.toggleTodo(id, isDone);
-  // Cập nhật store local
-  const todo = todoStore.todos.find(t => t.id === id);
-  if (todo) {
-    todo.isDone = isDone;
+  try {
+    await todoStore.toggleTodo(id, isDone)
+  } catch {
+    // Toast/interceptor đã xử lý; optimistic rollback nằm trong store.
   }
-};
+}
 
-// Hàm xử lý tạo todo thành công
-const handleCreateSuccess = async () => {
-  showCreateModal.value = false;
-  
-  // Reset filter về "all" và refetch todos
-  currentFilter.value = 'all';
-  await todoStore.fetchTodos();
-};
+const handleCreateSuccess = () => {
+  showCreateModal.value = false
+}
 
-// Hàm xử lý edit todo
-const handleEdit = (todo: any) => {
-  editingTodo.value = todo;
-  showEditModal.value = true;
-};
+const handleEdit = (todo: Todo) => {
+  editingTodo.value = todo
+  showEditModal.value = true
+}
 
-// Hàm xử lý edit success
-const handleEditSuccess = async () => {
-  showEditModal.value = false;
-  editingTodo.value = null;
-  
-  // Refetch todos để cập nhật dữ liệu
-  await todoStore.fetchTodos();
-};
+const handleEditSuccess = () => {
+  showEditModal.value = false
+  editingTodo.value = null
+}
 
-// Hàm xử lý xác nhận xóa
 const handleDeleteConfirm = async () => {
-  if (!deletingTodo.value) return;
-  
+  if (!deletingTodo.value) return
+
   try {
-    deleteLoading.value = true;
-    deleteError.value = '';
-    
-    // Sử dụng todoApi với toast tự động
-    await todoApi.deleteTodo(deletingTodo.value.id);
-    
-    // Refetch todos để cập nhật dữ liệu
-    await todoStore.fetchTodos();
-    
-    // Đóng modal sau khi xóa thành công
-    showDeleteModal.value = false;
-    deletingTodo.value = null;
-        } catch (error: any) {
-          deleteError.value = error.response?.data?.message || 'Có lỗi xảy ra khi xóa todo';
-        } finally {
-    deleteLoading.value = false;
+    deleteLoading.value = true
+    deleteError.value = ''
+    await todoStore.deleteTodo(deletingTodo.value.id)
+    showDeleteModal.value = false
+    deletingTodo.value = null
+  } catch (error: unknown) {
+    const parsed = parseApiError(error)
+    deleteError.value = t(errorI18nKey(parsed))
+    if (parsed.statusCode === 404 || parsed.statusCode === 403) {
+      await todoStore.fetchTodos()
+    }
+  } finally {
+    deleteLoading.value = false
   }
-};
+}
 
-
-// Hàm xử lý thay đổi trang
 const handlePageChange = async (page: number) => {
-  await todoStore.changePage(page);
-};
+  await todoStore.setPage(page)
+}
 
-// Filter methods
-const setFilter = async (filter: string) => {
-  currentFilter.value = filter;
-  
-  // Gọi API với filter mới
-  let isDone: boolean | undefined;
-  if (filter === 'completed') {
-    isDone = true;
-  } else if (filter === 'pending') {
-    isDone = false;
-  } else {
-    isDone = undefined; // 'all'
-  }
-  
-  try {
-    // Gọi API trực tiếp với axios
-    const { $axios } = useNuxtApp();
-    const params: any = { page: 1, limit: 10 };
-    if (isDone !== undefined) {
-      params.isDone = isDone;
-    }
-    
-    const response = await $axios.get('/todos', { params });
-    
-    // Cập nhật store với dữ liệu từ API response
-    if (response?.data) {
-      todoStore.todos = response.data.todos || [];
-      if (response.data.pagination) {
-        todoStore.currentPage = response.data.pagination.page || 1;
-        todoStore.totalPages = response.data.pagination.totalPages || 1;
-        todoStore.totalItems = response.data.pagination.total || 0;
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching filtered todos:', error);
-    // Fallback: gọi lại store fetchTodos nếu có lỗi
-    await todoStore.fetchTodos();
-  }
-};
+const handleFilterChange = async (filters: TodoQuery) => {
+  await todoStore.setFilters(filters)
+}
 
-const getFilterLabel = (filter: string) => {
-  switch (filter) {
-    case 'all':
-      return t('dashboard.filterAll');
-    case 'pending':
-      return t('dashboard.filterPending');
-    case 'completed':
-      return t('dashboard.filterCompleted');
-    default:
-      return t('dashboard.filterAll');
-  }
-};
+const handleResetFilters = async () => {
+  todoStore.reset()
+  await todoStore.fetchTodos()
+}
 </script>
